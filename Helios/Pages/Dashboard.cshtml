@@ -1,0 +1,142 @@
+﻿@page
+@inject IAppUserManager _userManager
+@using Helios.Data.Users
+@using Helios.Data.Users.Extensions
+@model DashboardModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    
+    var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
+}
+
+@section Scripts {
+    <script>
+     window.addEventListener("load", () => {
+         new ClipboardJS('.btn');
+     });
+     
+     $(document).ready(function() {
+         $("#show_hide_password a").on('click', function(event) {
+             event.preventDefault();
+             if($('#show_hide_password input').attr("type") == "text"){
+                 $('#show_hide_password input').attr('type', 'password');
+                 $('#show_hide_password i').addClass( "fa-eye-slash" );
+                 $('#show_hide_password i').removeClass( "fa-eye" );
+             }else if($('#show_hide_password input').attr("type") == "password"){
+                 $('#show_hide_password input').attr('type', 'text');
+                 $('#show_hide_password i').removeClass( "fa-eye-slash" );
+                 $('#show_hide_password i').addClass( "fa-eye" );
+             }
+         });
+     });
+     
+     
+     const hash = window.location.hash;
+     hash && $('a.nav-link[href="' + hash + '"]').tab('show');
+       
+     document.querySelectorAll('a.nav-link').forEach(link => {
+         link.onclick = () =>{ 
+             window.history.pushState(null, null, link.attributes.href.value);
+         };
+     });
+ </script>
+}
+
+<div>
+    <h2 class="text-center mt-3">Welcome to your dashboard, @(user.UserName).</h2>
+
+    <div class="row mt-5">
+        <div class="col-3">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">API Keys</a>
+                <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</a>
+                <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</a>
+            </div>
+        </div>
+        <div class="col-9">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+
+                    @* API Keys tab *@
+
+                    <h4>My API Keys</h4>
+
+                    <a asp-page="CreateAPIKey">
+                        <button class="btn btn-primary my-3">Create API Key</button>
+                    </a>
+
+                    @if ( true ) {
+                        <div>
+                            <p class="font-weight-light text-center">No API keys</p>
+                        </div>
+                    } else {
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Key Name</th>
+                                <th scope="col">Key Value</th>
+                                <th scope="col">Expires</th>
+                                <th scope="col">Functions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            @* @for ( var i = 0; i < user.ApiKeys.Count; i++ ) { *@
+                            @*      *@
+                            @* } *@
+                            </tbody>
+                        </table>
+                    }
+
+                    <p class="font-weight-light"><a href="/api/v1">Click here</a> for documentation.</p>
+                </div>
+                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+
+                    <h4>My profile</h4>
+
+                    <table class="table">
+                        <tr>
+                            <th scope="row">Username</th>
+                            <td>
+                                <form method="post" asp-page-handler="ChangeUsername">
+                                    <div class="input-group">
+                                        <input name="username" type="text" class="form-control" placeholder="@(user.UserName)">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-secondary" type="submit">Update</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">E-mail</th>
+                            <td>
+                                <form method="post" asp-page-handler="ChangeEmail">
+                                    <input name="email" type="text" class="form-control" placeholder="@(user.Email)" readonly>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Password</th>
+                            <td>
+                                <form method="post" asp-page-handler="ChangePassword">
+                                    <div class="input-group">
+                                        <input name="password" type="password" class="form-control" value="someSortOfPassword" readonly>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-secondary" type="submit">Request password reset</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
+            </div>
+        </div>
+    </div>
+</div>

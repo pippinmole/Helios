@@ -1,0 +1,30 @@
+﻿@page
+@model SignupModel
+
+@{
+    ViewData["Title"] = "Sign up";
+}
+
+<div class="container bg-white my-5 rounded" style="width: 500px; padding: 30px 50px;">
+    <h2 class="text-center font-weight-lighter" style="margin-bottom: 30px">
+        Create an account
+    </h2>
+
+    <form method="post" id="loginField">
+        <div asp-validation-summary="All" class="text-danger"></div>
+            
+        <input type="text" name="username" asp-for="SignupForm.Username" id="username" class="form-control mb-4" placeholder="Username">
+        <input type="email" autocomplete="on" name="email" asp-for="SignupForm.Email" id="email" class="form-control mb-4" placeholder="E-mail">
+        <input type="password" autocomplete="on" name="password" asp-for="SignupForm.Password" id="password" class="form-control mb-4" placeholder="Password">
+            
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="defaultLoginFormRemember">
+            <label class="custom-control-label" for="defaultLoginFormRemember">Keep me signed in on this device</label>
+        </div>
+
+        <button class="btn btn-primary btn-block my-4 debounce" type="submit" id="recaptcha">Sign Up</button>
+        @Html.AntiForgeryToken()
+    </form>
+    
+    <p class="font-weight-light">Already have an account? <a asp-page="Login">Login</a></p>
+</div>

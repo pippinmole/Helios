@@ -1,0 +1,81 @@
+using AspNetCore.Identity.Mongo;
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
+using Helios.Core;
+using Helios.Data.Users;
+using Helios.MailService;
+using Helios.Paypal;
+using Microsoft.AspNetCore.Identity;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddRazorPages();
+builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
+builder.Services.Configure<PaypalOptions>(builder.Configuration.GetSection(PaypalOptions.Name));
+
+builder.Services.AddScoped<IAppUserManager, AppUserManager>();
+builder.Services.AddSingleton<IMailSender, MailSender>();
+
+builder.Services.AddNotyf(config => {
+    config.DurationInSeconds = 10;
+    config.IsDismissable = true;
+    config.Position = NotyfPosition.TopRight;
+});
+
+builder.Services.AddCronJob<UptimeCronJob>(options => {
+    options.CronExpression = "*/2 * * * * *";
+    options.TimeZoneInfo = TimeZoneInfo.Local;
+});
+
+builder.Services.AddIdentityMongoDbProvider<ApplicationUser, ApplicationRole, Guid>(
+        identity => {
+            identity.Password.RequireDigit = false;
+            identity.Password.RequiredLength = 8;
+
+            // ApplicationUser settings
+            identity.User.RequireUniqueEmail = true;
+            identity.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@.-_";
+        },
+        mongo => {
+            mongo.ConnectionString = builder.Configuration.GetConnectionString("DatabaseConnectionString");
+            mongo.UsersCollection = "user_info";
+        })
+    .AddDefaultTokenProviders();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if ( !app.Environment.IsDevelopment() ) {
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+app.UseNotyf();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints => {
+    endpoints.MapControllers();
+});
+
+app.MapRazorPages();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.Run();

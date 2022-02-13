@@ -1,0 +1,32 @@
+﻿@using Helios.Data.Users
+@using Helios.Data.Users.Extensions
+@inject IAppUserManager _userManager
+@{
+    var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - Helios</title>
+    
+    @await Html.PartialAsync("Partials/_TopIncludes")
+</head>
+<body>
+
+@await Html.PartialAsync("Partials/_Navbar")
+
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+@* @await Html.PartialAsync("Partials/_Footer") *@
+@await Html.PartialAsync("Partials/_BottomIncludes")
+@await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
