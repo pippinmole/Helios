@@ -1,0 +1,60 @@
+﻿@inject IAppUserManager _userManager
+@using Helios.Data.Users
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - Helios</title>
+    
+    @await Html.PartialAsync("Partials/_TopIncludes")
+</head>
+<body>
+
+@await Html.PartialAsync("Partials/_Navbar")
+@* Body Start *@
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            
+            <div class="btn-group-vertical">
+                <a class="nav-link" href="/dashboard/profile">
+                    <button class="btn btn-primary">
+                        <i class="bi bi-person-circle"></i>
+
+                        Account
+                    </button>
+                </a>
+            </div>
+            
+             <div class="btn-group-vertical">
+                <a class="nav-link" href="/dashboard/devices">
+                    <i class="bi bi-person-circle"></i>
+                                                      
+                    Devices
+                </a>
+            </div>
+        </div>
+        <div class="col-6">
+            @RenderBody()
+        </div>
+        <div class="col">
+            Unused
+        </div>
+    </div>
+</div>
+
+@* Body End *@
+
+@* @await Html.PartialAsync("Partials/_Footer") *@
+@await Html.PartialAsync("Partials/_BottomIncludes")
+@await RenderSectionAsync("Scripts", required: false)
+
+
+</body>
+</html>

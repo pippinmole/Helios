@@ -5,8 +5,6 @@
 @inject IAppUserManager _userManager
 @{
     ViewData["Title"] = "Home page";
-
-    var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
 }
 
 <div class="text-center">

@@ -13,12 +13,11 @@ public class AccountVerificationModel : PageModel {
         _logger = logger;
         _userManager = userManager;
     }
-        
+
     public async Task<IActionResult> OnGetAsync() {
         var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
-        if ( user == null ) {
+        if ( user == null || user.EmailConfirmed )
             return Redirect("/");
-        }
 
         return Page();
     }

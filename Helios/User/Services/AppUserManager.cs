@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
 
 namespace Helios.Data.Users;
 
@@ -13,8 +14,6 @@ public class AppUserManager : IAppUserManager {
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly IMapper _mapper;
 
-    public ApplicationUser CurrentUser { get; }
-    
     public AppUserManager(IConfiguration configuration, ILogger<AppUserManager> logger,
         UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
         RoleManager<ApplicationRole> roleManager, IMapper mapper, IHttpContextAccessor _httpContext) {
@@ -26,6 +25,10 @@ public class AppUserManager : IAppUserManager {
         _mapper = mapper;
     }
 
+    public async Task<IList<ApplicationUser>> GetUsersInRoleAsync(string role) {
+        return await _userManager.GetUsersInRoleAsync(role);
+    }
+    
     public async Task<SafeApplicationUser> GetSafeUserAsync(ClaimsPrincipal principal) {
         var user = await GetUserAsync(principal);
         return _mapper.Map<SafeApplicationUser>(user);
@@ -35,8 +38,8 @@ public class AppUserManager : IAppUserManager {
         var user = await GetUserByIdAsync(id);
         return _mapper.Map<SafeApplicationUser>(user);
     }
-
-    public async Task<SafeApplicationUser> GetSafeUserByIdAsync(Guid id) {
+    
+    public async Task<SafeApplicationUser> GetSafeUserByIdAsync(ObjectId id) {
         var user = await GetUserByIdAsync(id);
         return _mapper.Map<SafeApplicationUser>(user);
     }
@@ -57,7 +60,7 @@ public class AppUserManager : IAppUserManager {
         return null;
     }
 
-    public async Task<ApplicationUser> GetUserByIdAsync(Guid id) {
+    public async Task<ApplicationUser> GetUserByIdAsync(ObjectId id) {
         return await _userManager.FindByIdAsync(id.ToString());
     }
 

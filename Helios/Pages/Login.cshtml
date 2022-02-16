@@ -17,9 +17,9 @@
         <input type="password" autocomplete="on" name="password" asp-for="LoginForm.Password" id="password" class="form-control mb-4" placeholder="Password">
         
         <div class="d-flex justify-content-between">
-            <div class="custom-control custom-checkbox">
-                <input class="custom-control-input" id="defaultLoginFormRemember">
-                <label class="custom-control-label" for="defaultLoginFormRemember">Keep me signed in on this device</label>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label asp-for="LoginForm.RememberMe" class="form-check-label" for="exampleCheck1">Keep me signed in on this device</label>
             </div>
             <div>
                 <a asp-page="ForgotPassword">Forgot password?</a>

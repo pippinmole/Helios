@@ -15,28 +15,30 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                     </li>
-                    
-                    @if ( User.IsLoggedIn() ) {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/dashboard">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/logout">Log out</a>
-                        </li>
-                    } else {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/login">Log in</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/signup">Sign up</a>
-                        </li>
-                    }
-                    
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-page="/pricing">Pricing</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-page="/contactus">Contact Us</a>
+                    </li>
                 </ul>
             </div>
+            
+            @if ( User.IsLoggedIn() ) {
+                <a asp-page="@Url.Page("/Dashboard")">
+                    <button class="btn btn-default">Dashboard</button>
+                </a>
+                <a asp-page="@Url.Page("/Logout")">
+                    <button class="btn btn-outline-dark">Log Out</button>
+                </a>
+            } else {
+                <a asp-page="Login">
+                    <button class="btn btn-default">Sign In</button>
+                </a>
+                <a asp-page="Signup">
+                    <button class="btn btn-outline-dark">Sign Up</button>
+                </a>
+            }
         </div>
     </nav>
 </header>

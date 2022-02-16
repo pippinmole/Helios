@@ -5,7 +5,7 @@ using Helios.MailService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Helios.Pages; 
+namespace Helios.Pages;
 
 public class SignupModel : PageModel {
     private readonly ILogger<SignupModel> _logger;
@@ -29,15 +29,15 @@ public class SignupModel : PageModel {
         var user = new ApplicationUser(SignupForm.Username, SignupForm.Email);
         var result = await _userManager.CreateAsync(user, SignupForm.Password);
 
-        _logger.LogInformation("Created user {Username}",SignupForm.Username);
-            
+        _logger.LogInformation("Created user {Username}", SignupForm.Username);
+
         if ( result.Succeeded ) {
             var verifyToken = HttpUtility.UrlEncode(await _userManager.GenerateEmailConfirmTokenAsync(user));
             var callback = Url.Page("SignupVerification", new {
                 token = verifyToken,
                 email = user.Email
             });
-                
+
             await _mailSender.SendEmailAsync(
                 new List<string> {
                     user.Email
@@ -46,12 +46,14 @@ public class SignupModel : PageModel {
                 $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}",
                 null
             );
-                
+
+            await _userManager.SignInAsync(user, SignupForm.RememberMe);
+            
             return Redirect("/");
         } else {
             foreach ( var error in result.Errors ) {
                 ModelState.AddModelError(error.Code, error.Description);
-                _logger.LogWarning($"Error creating user account: {error.Description}");
+                _logger.LogWarning("Error creating user account: {Description}", error.Description);
             }
 
             return Page();

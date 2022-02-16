@@ -1,83 +1,79 @@
 ﻿@page
 @using Helios.Data.Users.Extensions
-@using Helios.Data.Users
 @using Helios.Products
 @model Helios.Pages.Pricing
-@inject IAppUserManager _userManager
-
-@{
-    var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
-}
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <h1 class="display-4">Pricing</h1>
-    <p class="lead">Quickly build an effective pricing table for your potential customers with this Bootstrap example. It's built with default Bootstrap components and utilities with little customization.</p>
+    <p class="lead">
+        Select a plan that suits you. We cater our services to anybody, beginner or experienced. If you don't like our services, we offer refunds.
+    </p>
 </div>
 
-<div class="container">
-    <div class="card-deck mb-3 text-center">
-        <div class="card mb-4 box-shadow">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">Free</h4>
+<div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+    <div class="col">
+        <div class="card mb-4 rounded-3 shadow-sm">
+            <div class="card-header py-3">
+                <h4 class="my-0 fw-normal">Free</h4>
             </div>
             <div class="card-body">
-                <h1 class="card-title pricing-card-title">$0 <small class="text-muted">/ mo</small></h1>
+                <h1 class="card-title pricing-card-title">$0<small class="text-muted fw-light">/mo</small></h1>
                 <ul class="list-unstyled mt-3 mb-4">
                     <li><i class="bi bi-check"></i> Up to 1 device</li>
                     <li><i class="bi bi-check"></i> Uptime check every 1 hour</li>
                     <li><i class="bi bi-check"></i> Email notifications</li>
-                    @* <li></li> *@
                 </ul>
-                
                 @if ( User.IsLoggedIn() ) {
                     <a href="/checkout/product-1">
-                        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Sign up</button>
+                        <button type="button" class="w-100 btn btn-lg btn-outline-primary">Sign up for free</button>
                     </a>   
                 } else {
                     <a href="/signup">
-                        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Sign up</button>
-                    </a>   
-                }
-            </div>
-        </div>
-        <div class="card mb-4 box-shadow">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">Pro</h4>
-            </div>
-            <div class="card-body">
-                <h1 class="card-title pricing-card-title">$4.99 <small class="text-muted">/ mo</small></h1>
-                <ul class="list-unstyled mt-3 mb-4">
-                    <li><i class="bi bi-check"></i> Up to 5 devices</li>
-                    <li><i class="bi bi-check"></i> Uptime check every 30 minutes</li>
-                    <li><i class="bi bi-check"></i> Email + SMS notifications</li>
-                    @* <li></li> *@
-                </ul>
-                
-                @if ( User.IsLoggedIn() ) {
-                    <a href="/checkout/@Product.ProTier.Id">
-                        <button type="button" class="btn btn-lg btn-block btn-primary text-decoration-none">Buy now</button>
-                    </a>          
-                } else {
-                    <a href="/signup">
-                        <button type="button" class="btn btn-lg btn-block btn-primary text-decoration-none">Get started</button>
+                        <button type="button" class="w-100 btn btn-lg btn-outline-primary">Sign up for free</button>
                     </a>
                 }
             </div>
         </div>
-        <div class="card mb-4 box-shadow">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">Enterprise</h4>
+    </div>
+    <div class="col">
+        <div class="card mb-4 rounded-3 shadow-sm">
+            <div class="card-header py-3">
+                <h4 class="my-0 fw-normal">Pro</h4>
             </div>
             <div class="card-body">
-                <h1 class="card-title pricing-card-title">$14.99 <small class="text-muted">/ mo</small></h1>
+                <h1 class="card-title pricing-card-title">$4.99<small class="text-muted fw-light">/mo</small></h1>
+                <ul class="list-unstyled mt-3 mb-4">
+                    <li><i class="bi bi-check"></i> Up to 5 devices</li>
+                    <li><i class="bi bi-check"></i> Uptime check every 30 minutes</li>
+                    <li><i class="bi bi-check"></i> Email + SMS notifications</li>
+                </ul>
+                
+                @if ( User.IsLoggedIn() ) {
+                    <a href="/checkout/@Product.ProTier.Id">
+                        <button type="button" class="w-100 btn btn-lg btn-primary">Buy now</button>
+                    </a>          
+                } else {
+                    <a href="/signup">
+                        <button type="button" class="w-100 btn btn-lg btn-primary">Get started</button>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card mb-4 rounded-3 shadow-sm border-primary">
+            <div class="card-header py-3 text-white bg-primary border-primary">
+                <h4 class="my-0 fw-normal">Enterprise</h4>
+            </div>
+            <div class="card-body">
+                <h1 class="card-title pricing-card-title">$14.99<small class="text-muted fw-light">/mo</small></h1>
                 <ul class="list-unstyled mt-3 mb-4">
                     <li><i class="bi bi-check"></i> Unlimited devices</li>
                     <li><i class="bi bi-check"></i> Uptime check every 5 minutes</li>
                     <li><i class="bi bi-check"></i> Email + SMS notifications</li>
-                    @* <li></li> *@
                 </ul>
                 
-                <button type="button" class="btn btn-lg btn-block btn-primary text-decoration-none">Contact us</button>
+                <button type="button" class="w-100 btn btn-lg btn-primary">Contact us</button>
             </div>
         </div>
     </div>

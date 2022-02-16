@@ -12,4 +12,7 @@ public class SignUpForm {
             
     [Required, StringLength(32), DataType(DataType.Password), UnicodeOnly]
     public string Password { get; set; }
+
+    [Required]
+    public bool RememberMe { get; set; }
 }

@@ -1,18 +1,21 @@
 using System.Linq.Expressions;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
 
 namespace Helios.Data.Users;
 
 public interface IAppUserManager {
+
+    Task<IList<ApplicationUser>> GetUsersInRoleAsync(string role);
     
     Task<SafeApplicationUser> GetSafeUserAsync(ClaimsPrincipal principal);
     Task<SafeApplicationUser> GetSafeUserByIdAsync(string id);
-    Task<SafeApplicationUser> GetSafeUserByIdAsync(Guid id);
+    Task<SafeApplicationUser> GetSafeUserByIdAsync(ObjectId id);
 
     Task<ApplicationUser> GetUserAsync(ClaimsPrincipal principal);
     Task<ApplicationUser> GetUserByIdAsync(string id);
-    Task<ApplicationUser> GetUserByIdAsync(Guid id);
+    Task<ApplicationUser> GetUserByIdAsync(ObjectId id);
     Task<IdentityResult> UpdateUserAsync(ApplicationUser user);
     Task<ApplicationUser> GetUserByEmailAsync(string? email);
     Task<IdentityResult> RemoveUserAsync(ApplicationUser user);

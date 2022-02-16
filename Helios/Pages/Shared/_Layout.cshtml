@@ -1,11 +1,4 @@
-﻿@using Helios.Data.Users
-@using Helios.Data.Users.Extensions
-@inject IAppUserManager _userManager
-@{
-    var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>

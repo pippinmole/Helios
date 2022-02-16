@@ -1,11 +1,18 @@
-﻿namespace Helios.Helium.Schemas;
+﻿using System.Net;
 
-// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
+namespace Helios.Helium.Schemas;
+
 public class Status {
     public DateTime timestamp { get; set; }
     public string online { get; set; }
     public List<string> listen_addrs { get; set; }
     public int height { get; set; }
+
+    public IEnumerable<string> GetListenAddresses() {
+        return listen_addrs
+            .Select(ip => ip.Remove(0, 5))
+            .Select(address => address.Remove(address.IndexOf("/tcp/", StringComparison.Ordinal)));
+    }
 }
 
 public class Geocode {
@@ -20,7 +27,7 @@ public class Geocode {
     public string city_id { get; set; }
 }
 
-public class Hotspot {
+public class HotspotReport {
     public double lng { get; set; }
     public double lat { get; set; }
     public DateTime timestamp_added { get; set; }
@@ -44,5 +51,5 @@ public class Hotspot {
 }
 
 public class HotspotResult {
-    public List<Hotspot> data { get; set; }
+    public List<HotspotReport> data { get; set; }
 }

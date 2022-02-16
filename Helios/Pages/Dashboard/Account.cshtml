@@ -1,0 +1,32 @@
+﻿@page "/dashboard/profile"
+@using Helios.Data.Users
+@using Helios.Data.Users.Extensions
+@model AccountModel
+@inject IAppUserManager _userManager
+
+@{
+    Layout = "Shared/_DashboardLayout";
+
+    var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
+}
+
+<h2 class="text-center">Account details</h2>
+
+<ul>
+    <li>
+        <strong>Account Type </strong>
+        
+        @user.AccountType
+    </li>
+</ul>
+
+<form asp-page-handler="UpdateAccountType">
+    <select class="form-select" aria-label="Default select example" name="accountType">
+        <option selected>Select account type</option>
+        <option value="@((int)EAccountType.Free)">Free</option>
+        <option value="@((int)EAccountType.Pro)">Pro</option>
+        <option value="@((int)EAccountType.Enterprise)">Enterprise</option>
+    </select>
+    
+    <button class="btn btn-primary" type="submit">Upgrade</button>
+</form>

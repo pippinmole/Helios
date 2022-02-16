@@ -3,9 +3,11 @@ using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using Helios.Core;
 using Helios.Data.Users;
+using Helios.Helium;
 using Helios.MailService;
 using Helios.Paypal;
 using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,21 +20,22 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
 builder.Services.Configure<PaypalOptions>(builder.Configuration.GetSection(PaypalOptions.Name));
 
+builder.Services.AddSingleton<IHeliumService, HeliumService>();
 builder.Services.AddScoped<IAppUserManager, AppUserManager>();
 builder.Services.AddSingleton<IMailSender, MailSender>();
 
 builder.Services.AddNotyf(config => {
-    config.DurationInSeconds = 10;
+    config.DurationInSeconds = 6;
     config.IsDismissable = true;
     config.Position = NotyfPosition.TopRight;
 });
 
 builder.Services.AddCronJob<UptimeCronJob>(options => {
-    options.CronExpression = "*/2 * * * * *";
+    options.CronExpression = "*/20 * * * * *";
     options.TimeZoneInfo = TimeZoneInfo.Local;
 });
 
-builder.Services.AddIdentityMongoDbProvider<ApplicationUser, ApplicationRole, Guid>(
+builder.Services.AddIdentityMongoDbProvider<ApplicationUser, ApplicationRole, ObjectId>(
         identity => {
             identity.Password.RequireDigit = false;
             identity.Password.RequiredLength = 8;
@@ -67,13 +70,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints => {
+    endpoints.MapRazorPages();
     endpoints.MapControllers();
 });
 
-app.MapRazorPages();
-
-if (app.Environment.IsDevelopment())
-{
+if ( app.Environment.IsDevelopment() ) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }

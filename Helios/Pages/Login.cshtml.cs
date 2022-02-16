@@ -20,26 +20,18 @@ public class LoginModel : PageModel {
     }
         
     public async Task<IActionResult> OnPost() {
-        if ( !ModelState.IsValid ) {
-            foreach ( var error in ViewData.ModelState.Values.SelectMany(modelState => modelState.Errors) ) {
-                _logger.LogWarning(error.ErrorMessage);
-            }
-
-            return Page();
-        }
-
         _logger.LogInformation("Login attempt for {Username}", LoginForm.Username);
 
         var result = await _signInManager.PasswordSignInAsync(LoginForm.Username, LoginForm.Password,
             LoginForm.RememberMe, false);
 
-        if ( result.Succeeded ) {
-            return RedirectToPage("/Dashboard");
-        } else {
+        if ( !result.Succeeded ) {
             _logger.LogWarning("Login attempt failed");
             ModelState.AddModelError("", "Login failed. Please check the credentials and try again.");
-                
+
             return Page();
         }
+
+        return Redirect("/");
     }
 }
