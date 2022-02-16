@@ -15,21 +15,19 @@
         <div class="col-md-4 order-md-2 mb-4">
             <h4 class="d-flex justify-content-between align-items-center mb-3">
                 <span class="text-muted">Your cart</span>
-                <span class="badge badge-secondary badge-pill">@Model.Cart.Count</span>
+                <span class="badge badge-secondary badge-pill">1</span>
             </h4>
             <ul class="list-group mb-3">
-                @foreach ( var item in Model.Cart ) {
-                    <li class="list-group-item d-flex justify-content-between lh-condensed">
-                        <div>
-                            <h6 class="my-0">@item.Name</h6>
-                            <small class="text-muted">@item.BriefDescription</small>
-                        </div>
-                        <span class="text-muted">@FloatToPriceUsd(item.PriceUsdUsd)</span>
-                    </li>
-                }
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <h6 class="my-0">@Model.Cart.Name</h6>
+                        <small class="text-muted">@Model.Cart.BriefDescription</small>
+                    </div>
+                    <span class="text-muted">@FloatToPriceUsd(Model.Cart.PriceUsd)</span>
+                </li>
                 <li class="list-group-item d-flex justify-content-between">
                     <span>Total (USD)</span>
-                    <strong>@FloatToPriceUsd(Model.Cart.Sum(x=> x.PriceUsdUsd))</strong>
+                    <strong>@FloatToPriceUsd(Model.Cart.PriceUsd)</strong>
                 </li>
             </ul>
 
@@ -71,7 +69,7 @@
         paypal.Buttons({
             // Call your server to set up the transaction
             createOrder: function(data, actions) {
-                return fetch('/checkout/api/paypal/order/create/', {
+                return fetch('/checkout/api/paypal/order/create/' + @Model.Cart.Id, {
                     method: 'post',
                     headers: {
                         'content-type': 'application/json',
@@ -84,7 +82,7 @@
                     return orderData.id;
                 });
             },
-    
+            
             // Call your server to finalize the transaction
             onApprove: function(data, actions) {
                 return fetch('/checkout/api/paypal/order/capture/' + data.orderID, {

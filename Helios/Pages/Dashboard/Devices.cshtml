@@ -57,6 +57,8 @@
     
     <small class="text-muted fs-6">
         @deviceCount out of @maxDevices device slots used
+        
+        <a href="@Url.Page("/pricing")">Upgrade Now</a>
     </small>
 </h4>
 
@@ -99,12 +101,6 @@
                         @* Uptime *@
                         <li class="list-group-item">
                             <strong>Uptime: </strong> IMPLEMENT
-                        </li>
-
-                        @* Online? *@
-                        <li class="list-group-item">
-                            <strong>Status: </strong> 
-                            @UppercaseFirst(device.LastReport == null ? "Unknown" : device.LastReport.status.online)
                         </li>
 
                         @* Explorer page *@

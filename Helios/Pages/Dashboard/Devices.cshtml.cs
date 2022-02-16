@@ -25,8 +25,6 @@ public class DevicesModel : DashboardModel {
         if ( !ModelState.IsValid )
             return Page();
 
-        _logger.LogInformation("Adding device with name: {Name}", animalName);
-
         var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
         if ( user == null ) return Redirect("/");
 
@@ -48,10 +46,12 @@ public class DevicesModel : DashboardModel {
             
             return Page();
         }
-
+        
         user.Devices ??= new List<HeliumMiner>();
         user.Devices.Add(new HeliumMiner(animalName, report));
 
+        _logger.LogInformation("Added device with name: {Name}", animalName);
+        
         await _userManager.UpdateUserAsync(user);
 
         return Page();

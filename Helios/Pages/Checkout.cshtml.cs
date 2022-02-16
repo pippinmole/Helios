@@ -9,7 +9,7 @@ public class CheckoutModel : PageModel {
     
     private readonly ILogger<CheckoutModel> _logger;
 
-    public List<Product> Cart { get; set; }
+    public Product Cart { get; set; }
 
     public CheckoutModel(ILogger<CheckoutModel> logger) {
         _logger = logger;
@@ -19,7 +19,7 @@ public class CheckoutModel : PageModel {
         if ( !User.IsLoggedIn() )
             return Redirect("/");
         
-        Cart = new List<Product> {Product.Tiers[id]};
+        Cart = Product.Tiers[id];
 
         return Page();
     }

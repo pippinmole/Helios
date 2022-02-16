@@ -18,10 +18,6 @@ public class IndexModel : PageModel {
         if ( !User.IsLoggedIn() ) return Page();
         
         var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
-        
-        _logger.LogInformation("User Id: {Id}", User.GetUniqueId());
-        _logger.LogInformation("Is user null? {Bool}", user == null);
-        
         if ( user == null ) return Page();
         
         return user.EmailConfirmed

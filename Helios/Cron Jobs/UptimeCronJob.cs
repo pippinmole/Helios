@@ -19,8 +19,6 @@ public class UptimeCronJob : CronJobService {
     }
 
     public override async Task DoWork(CancellationToken cancellationToken) {
-        _logger.LogInformation("Doing work");
-        
         var scope = _serviceProvider.CreateScope();
         var userService = scope.ServiceProvider.GetRequiredService<IAppUserManager>();
 
@@ -32,7 +30,7 @@ public class UptimeCronJob : CronJobService {
         var users = userService.GetUsersWhere(x => true);
         
         foreach ( var user in users ) {
-            _logger.LogInformation("User has paid: {Username}", user.UserName);
+            // _logger.LogInformation("User has paid: {Username}", user.UserName);
 
             user.Devices ??= new List<HeliumMiner>();
             

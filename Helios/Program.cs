@@ -3,6 +3,7 @@ using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using Helios.Core;
 using Helios.Data.Users;
+using Helios.Database;
 using Helios.Helium;
 using Helios.MailService;
 using Helios.Paypal;
@@ -20,6 +21,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
 builder.Services.Configure<PaypalOptions>(builder.Configuration.GetSection(PaypalOptions.Name));
 
+builder.Services.AddSingleton<IDatabaseContext, DatabaseContext>();
+builder.Services.AddSingleton<IPaypalDatabase, PaypalDatabase>();
 builder.Services.AddSingleton<IHeliumService, HeliumService>();
 builder.Services.AddScoped<IAppUserManager, AppUserManager>();
 builder.Services.AddSingleton<IMailSender, MailSender>();

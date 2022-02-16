@@ -1,10 +1,12 @@
-﻿using System.Net;
-using System.Runtime.Serialization;
+﻿using System.Globalization;
+using System.Net;
 using Helios.Data.Users;
 using Helios.Data.Users.Extensions;
 using Helios.Paypal;
+using Helios.Products;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using Newtonsoft.Json;
 using PayPalCheckoutSdk.Orders;
 using PayPalCheckoutSdk.Core;
@@ -16,20 +18,28 @@ namespace Helios.Controllers;
 public class PaypalController : ControllerBase {
     private readonly ILogger<PaypalController> _logger;
     private readonly IAppUserManager _userManager;
+    private readonly IPaypalDatabase _paypalDatabase;
     private readonly PayPalHttp.HttpClient _paypalClient;
 
     public PaypalController(ILogger<PaypalController> logger, IAppUserManager userManager,
-        IOptions<PaypalOptions> paypalOptions) {
+        IOptions<PaypalOptions> paypalOptions, IPaypalDatabase paypalDatabase) {
         _logger = logger;
         _userManager = userManager;
+        _paypalDatabase = paypalDatabase;
 
         _paypalClient =
             new PayPalHttpClient(new SandboxEnvironment(paypalOptions.Value.ClientId,
                 paypalOptions.Value.ClientSecret));
     }
 
-    [HttpPost("create")]
-    public async Task<JsonResult> OnOrderCreate() {
+    [HttpPost("create/{sku:int}")]
+    public async Task<JsonResult> OnOrderCreate(int sku) {
+        
+        _logger.LogInformation("Starting order for sku {Sku}", sku);
+
+        var product = Product.Tiers[sku];
+        if ( product == null ) return new JsonResult("");
+        
         // Construct a request object and set desired parameters
         // Here, OrdersCreateRequest() creates a POST request to /v2/checkout/orders
         var order = new OrderRequest {
@@ -38,7 +48,16 @@ public class PaypalController : ControllerBase {
                 new() {
                     AmountWithBreakdown = new AmountWithBreakdown {
                         CurrencyCode = "USD",
-                        Value = "100.00"
+                        Value = product.PriceUsd.ToString(CultureInfo.InvariantCulture),
+                        AmountBreakdown = new AmountBreakdown() {
+                            Discount = new Money() { CurrencyCode = "USD", Value = "0"},
+                            Handling = new Money() { CurrencyCode = "USD", Value = "0"},
+                            Insurance = new Money() { CurrencyCode = "USD", Value = "0"},
+                            ItemTotal = new Money() { CurrencyCode = "USD", Value = product.PriceUsd.ToString(CultureInfo.InvariantCulture)},
+                            Shipping = new Money() { CurrencyCode = "USD", Value = "0"},
+                            ShippingDiscount = new Money() { CurrencyCode = "USD", Value = "0"},
+                            TaxTotal = new Money() { CurrencyCode = "USD", Value = "0"},
+                        }
                     }
                 }
             },
@@ -49,23 +68,28 @@ public class PaypalController : ControllerBase {
             }
         };
 
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        
         // Call API with your client and get a response for your call
         var request = new OrdersCreateRequest();
         request.Prefer("return=representation");
         request.RequestBody(order);
+        
         var response = await _paypalClient.Execute(request);
-        var statusCode = response.StatusCode;
         var result = response.Result<Order>();
 
-        Console.WriteLine("Status: {0}", result.Status);
-        Console.WriteLine("Order Id: {0}", result.Id);
-        Console.WriteLine("Intent: {0}", result.CheckoutPaymentIntent);
-        Console.WriteLine("Links:");
+        _logger.LogInformation("Status: {Statue}" +
+                               "\n \t Order Id: {OrderId}" +
+                               "\n \t Intent: {Intent}" +
+                               "\n \t Links: ", result.Status, result.Id, result.CheckoutPaymentIntent);
 
         foreach ( var link in result.Links ) {
-            Console.WriteLine("\t{0}: {1}\tCall Type: {2}", link.Rel, link.Href, link.Method);
+            _logger.LogInformation("\t{Rel}: {Href}\tCall Type: {Method}", link.Rel, link.Href, link.Method);
         }
 
+        var paypalOrder = new PaypalOrder(sku, result.Id);
+        await _paypalDatabase.AddOrder(paypalOrder);
+        
         return new JsonResult(result);
     }
 
@@ -76,25 +100,31 @@ public class PaypalController : ControllerBase {
         // Construct a request object and set desired parameters
         var request = new OrdersCaptureRequest(id);
         request.RequestBody(new OrderActionRequest());
-        
+
         var response = await _paypalClient.Execute(request);
-        var statusCode = response.StatusCode;
         var result = response.Result<Order>();
+        if ( response.StatusCode != HttpStatusCode.Created ) {
+            _logger.LogCritical("Error when trying to capture payment for id {Id}. Status Code: {Code}", id,
+                response.StatusCode);
+            return null;
+        }
 
-        _logger.LogInformation("Status: {0}", result.Status);
-        _logger.LogInformation("Capture Id: {0}", result.Id);
+        var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
+        if ( user == null ) {
+            _logger.LogCritical(
+                "Critical error trying to get user information after capturing and processing PayPal payment");
+            return null;
+        }
 
-        // if ( response.StatusCode != HttpStatusCode.OK ) {
-        //     _logger.LogCritical("Error when trying to capture payment for id {Id}: Status Code {Code}", id,
-        //         response.StatusCode);
-        //     return Redirect("/");
-        // }
-        //
-        // var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
-        // if ( user == null ) {
-        //     _logger.LogCritical("Critical error trying to get user information after capturing and processing PayPal payment");
-        //     return Redirect("/");
-        // }
+        // elevate user here
+        // TODO: Allow multiple items in the product list
+
+        var paypalOrder = await _paypalDatabase.GetOrderById(result.Id);
+        user.AccountType = (EAccountType) paypalOrder.Sku;
+
+        await _userManager.UpdateUserAsync(user);
+        
+        _logger.LogInformation("Elevated {UserName} to {AccountType}", user.UserName, (EAccountType) paypalOrder.Sku);
 
         return result;
     }
