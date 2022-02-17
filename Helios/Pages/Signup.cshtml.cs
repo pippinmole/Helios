@@ -1,4 +1,6 @@
 ﻿using System.Web;
+using FluentEmail.Core;
+using FluentEmail.Mailgun;
 using Helios.Data.Users;
 using Helios.Forms;
 using Helios.MailService;
@@ -38,14 +40,15 @@ public class SignupModel : PageModel {
                 email = user.Email
             });
 
-            await _mailSender.SendEmailAsync(
-                new List<string> {
-                    user.Email
-                },
-                "Account verification",
-                $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}",
-                null
-            );
+            var url = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}";
+            await _mailSender.SendVerifyEmail(user.Email, user.UserName, url);
+            
+            // await _mailSender.SendEmailAsync(
+            //     user.Email,
+            //     "Account verification",
+            //     $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}",
+            //     null
+            // );
 
             await _userManager.SignInAsync(user, SignupForm.RememberMe);
             

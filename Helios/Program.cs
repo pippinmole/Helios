@@ -1,6 +1,7 @@
 using AspNetCore.Identity.Mongo;
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
+using FluentEmail.Mailgun;
 using Helios.Core;
 using Helios.Data.Users;
 using Helios.Database;
@@ -21,11 +22,23 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
 builder.Services.Configure<PaypalOptions>(builder.Configuration.GetSection(PaypalOptions.Name));
 
+var mailgunOptions = new MailSenderOptions();
+builder.Configuration.GetSection(MailSenderOptions.Name).Bind(mailgunOptions);
+
+const string domain = "mail.ruffles.pw";
+
+Console.WriteLine(Directory.Exists($"{Directory.GetCurrentDirectory()}/Email Templates"));
+
+builder.Services
+    .AddFluentEmail("mailgun@" + domain, "mailgun")
+    .AddRazorRenderer($"{Directory.GetCurrentDirectory()}/Email Templates")
+    .AddMailGunSender(domain, mailgunOptions.ApiKey, MailGunRegion.EU);
+
 builder.Services.AddSingleton<IDatabaseContext, DatabaseContext>();
 builder.Services.AddSingleton<IPaypalDatabase, PaypalDatabase>();
 builder.Services.AddSingleton<IHeliumService, HeliumService>();
 builder.Services.AddScoped<IAppUserManager, AppUserManager>();
-builder.Services.AddSingleton<IMailSender, MailSender>();
+builder.Services.AddScoped<IMailSender, MailSender>();
 
 builder.Services.AddNotyf(config => {
     config.DurationInSeconds = 6;

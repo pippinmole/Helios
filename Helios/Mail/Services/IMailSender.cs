@@ -5,6 +5,7 @@ namespace Helios.MailService;
 
 public interface IMailSender {
 
-    Task SendEmailAsync(IEnumerable<string> recipients, string subject, string body, string sender);
+    Task SendEmailAsync(string recipients, string subject, string body, string sender);
+    Task SendVerifyEmail(string address, string username, string verifyUrl);
 
 }

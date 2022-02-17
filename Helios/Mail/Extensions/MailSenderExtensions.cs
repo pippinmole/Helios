@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace Helios.Extensions; 
 
 public static class MailSenderExtensions {
-
     public static async Task SendPasswordReset(this IMailSender sender, string email, string resetToken,
         PageModel context) {
         var callback = context.Url.Page("passwordreset", new {
@@ -15,9 +14,7 @@ public static class MailSenderExtensions {
         });
 
         await sender.SendEmailAsync(
-            new List<string>() {
-                email
-            },
+            email,
             "Password reset",
             $"{context.Request.Scheme}://{context.Request.Host}{callback}",
             null
