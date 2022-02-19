@@ -1,12 +1,12 @@
-using AspNetCoreHero.ToastNotification.Toastify;
+using System.Web;
 using FluentEmail.Core;
-using FluentEmail.Mailgun;
 using Helios.Email_Templates;
-using Helios.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Helios.MailService; 
+namespace Helios.MailService;
 
-public class MailSender : IMailSender  {
+public class MailSender : IMailSender {
 
     private readonly ILogger<MailSender> _logger;
     private readonly IFluentEmailFactory _emailFactory;
@@ -16,7 +16,8 @@ public class MailSender : IMailSender  {
         _emailFactory = emailFactory;
     }
 
-    public async Task SendVerifyEmail(string address, string username, string verifyUrl) {
+    public async Task SendVerifyEmailAsync(string address, string username, string verifyUrl,
+        CancellationToken? token = null) {
         var email = _emailFactory.Create()
             .To(address)
             .Subject("Verify your email")
@@ -24,56 +25,33 @@ public class MailSender : IMailSender  {
                 Username = username,
                 VerifyUrl = verifyUrl
             });
-        // .UsingMailgunTemplate("verify-email")
-            // .UsingMailgunTemplateVariables(new Dictionary<string, string>() {
-            //     { "username", username },
-            //     { "verify_url", verifyUrl }
-            // });
 
-        _logger.LogInformation("To: {To}", email.Data.ToAddresses.ToList()[0].EmailAddress);
-        _logger.LogInformation("FromAddress.Name: {Name}", email.Data.FromAddress.Name);
-        _logger.LogInformation("FromAddress.EmailAddress: {Address}", email.Data.FromAddress.EmailAddress);
-        _logger.LogInformation("FromAddress: {Address}", email.Data.FromAddress);
-
-        var response = await email.SendAsync();
-        
-        _logger.LogInformation("Response Successful: {Response}", response.Successful);
-
-        foreach ( var error in response.ErrorMessages ) {
-            _logger.LogInformation("Response Error: {Response}", error);
+        var response = await email.SendAsync(token).ConfigureAwait(false);
+        if ( response.Successful ) {
+            _logger.LogInformation("Successfully sent verify email: {Response}", response.Successful);
+        } else {
+            foreach ( var error in response.ErrorMessages ) {
+                _logger.LogError("Failed to send email verification email: {Error}", error);
+            }
         }
     }
 
-    public async Task SendEmailAsync(string recipients, string subject, string body, string sender) {
+    public async Task SendResetPasswordAsync(string address,string username, string resetUrl, CancellationToken? token = null) {
+        var email = _emailFactory.Create()
+            .To(address)
+            .Subject("Password Reset")
+            .UsingTemplateFromFile("Email Templates/ResetPassword.cshtml", new ResetPasswordEmailModel {
+                Username = username,
+                ResetUrl = resetUrl
+            });
 
-        var email = Email
-            .From("test@ruffles.pw")
-            .To(recipients)
-            .Subject(subject)
-            .Body(body);
-
-        await email.SendAsync();
-
-        // var msg = new MailMessage {
-        //     Subject = subject,
-        //     Body = body,
-        //     IsBodyHtml = true,
-        //     From = new MailAddress(options.AddressFrom),
-        //     BodyEncoding = Encoding.UTF8
-        // };
-        //
-        // foreach ( var recipient in recipients ) {
-        //     msg.To.Add(recipient);
-        // }
-
-        // Build SMTP Server
-        // using var client = new SmtpClient {
-        //     Host = options.SmtpHostAddress,
-        //     Port = options.Port,
-        //     EnableSsl = true,
-        //     Credentials = new NetworkCredential(options.AddressFrom, options.Password)
-        // };
-        //
-        // await client.SendMailAsync(msg);
+        var response = await email.SendAsync(token).ConfigureAwait(false);
+        if ( response.Successful ) {
+            _logger.LogInformation("Successfully sent password reset email: {Response}", response.Successful);
+        } else {
+            foreach ( var error in response.ErrorMessages ) {
+                _logger.LogError("Failed to send password reset email: {Response}", error);
+            }
+        }
     }
 }

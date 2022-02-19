@@ -41,7 +41,7 @@ public class SignupModel : PageModel {
             });
 
             var url = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}";
-            await _mailSender.SendVerifyEmail(user.Email, user.UserName, url);
+            await _mailSender.SendVerifyEmailAsync(user.Email, user.UserName, url);
             
             // await _mailSender.SendEmailAsync(
             //     user.Email,

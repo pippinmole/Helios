@@ -73,8 +73,16 @@
                     <li><i class="bi bi-check"></i> Email + SMS notifications</li>
                 </ul>
                 
-                <button type="button" class="w-100 btn btn-lg btn-primary">Contact us</button>
-            </div>
+                @if ( User.IsLoggedIn() ) {
+                    <a href="/checkout/@Product.EnterpriseTier.Id">
+                        <button type="button" class="w-100 btn btn-lg btn-primary">Buy now</button>
+                    </a>          
+                } else {
+                    <a href="/signup">
+                        <button type="button" class="w-100 btn btn-lg btn-primary">Get started</button>
+                    </a>
+                }
+                </div>
         </div>
     </div>
 </div>

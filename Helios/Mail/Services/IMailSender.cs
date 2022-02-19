@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using FluentEmail.Core;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Helios.MailService; 
+namespace Helios.MailService;
 
 public interface IMailSender {
-
-    Task SendEmailAsync(string recipients, string subject, string body, string sender);
-    Task SendVerifyEmail(string address, string username, string verifyUrl);
-
+    Task SendVerifyEmailAsync(string address, string username, string verifyUrl, CancellationToken? token = null);
+    Task SendResetPasswordAsync(string address, string username, string resetUrl, CancellationToken? token = null);
 }

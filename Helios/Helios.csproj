@@ -13,6 +13,8 @@
       <Folder Include="Cron" />
       <Folder Include="Forms\Attributes" />
       <Folder Include="Mail" />
+      <Folder Include="Mail\Extensions" />
+      <Folder Include="wwwroot\img" />
     </ItemGroup>
 
     <ItemGroup>
@@ -28,6 +30,7 @@
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="PayPalCheckoutSdk" Version="1.0.4" />
       <PackageReference Include="RazorLight" Version="2.0.0-rc.6" />
+      <PackageReference Include="reCAPTCHA.AspNetCore" Version="3.0.10" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 

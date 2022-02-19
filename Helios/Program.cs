@@ -10,6 +10,7 @@ using Helios.MailService;
 using Helios.Paypal;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
+using reCAPTCHA.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,21 +20,21 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddDataProtection();
+builder.Services.AddAntiforgery();
+
 builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
 builder.Services.Configure<PaypalOptions>(builder.Configuration.GetSection(PaypalOptions.Name));
 
 var mailgunOptions = new MailSenderOptions();
 builder.Configuration.GetSection(MailSenderOptions.Name).Bind(mailgunOptions);
 
-const string domain = "mail.ruffles.pw";
-
-Console.WriteLine(Directory.Exists($"{Directory.GetCurrentDirectory()}/Email Templates"));
-
 builder.Services
-    .AddFluentEmail("mailgun@" + domain, "mailgun")
+    .AddFluentEmail($"{mailgunOptions.FromName}@{mailgunOptions.Domain}", "mailgun")
     .AddRazorRenderer($"{Directory.GetCurrentDirectory()}/Email Templates")
-    .AddMailGunSender(domain, mailgunOptions.ApiKey, MailGunRegion.EU);
+    .AddMailGunSender(mailgunOptions.Domain, mailgunOptions.ApiKey, MailGunRegion.EU);
 
+builder.Services.AddRecaptcha(builder.Configuration.GetSection("RecaptchaSettings"));
 builder.Services.AddSingleton<IDatabaseContext, DatabaseContext>();
 builder.Services.AddSingleton<IPaypalDatabase, PaypalDatabase>();
 builder.Services.AddSingleton<IHeliumService, HeliumService>();
@@ -66,6 +67,10 @@ builder.Services.AddIdentityMongoDbProvider<ApplicationUser, ApplicationRole, Ob
             mongo.UsersCollection = "user_info";
         })
     .AddDefaultTokenProviders();
+
+builder.Services.AddRouting(x => {
+    x.LowercaseUrls = true;
+});
 
 var app = builder.Build();
 

@@ -3,32 +3,36 @@
 
 @{
     ViewData["Title"] = "Log in";
+    Layout = "Shared/_EmptyLayout";
 }
 
-<div class="container bg-white my-5 rounded" style="width: 500px; padding: 30px 50px;">
-    <h2 class="text-center font-weight-lighter" style="margin-bottom: 30px">
-        Sign in
-    </h2>
+<div class="container bg-white rounded shadow" style="width: 500px; padding: 30px 50px; margin-top: 100px">
+    <h1 class="text-center font-weight-lighter fs-5 mb-4" style="font-weight: 600">
+        Log in to Helios
+    </h1>
 
     <form method="post" id="loginField">
         <div asp-validation-summary="All" class="text-danger"></div>
             
-        <input type="text" name="username" asp-for="LoginForm.Username" id="username" class="form-control mb-4" placeholder="Username">
-        <input type="password" autocomplete="on" name="password" asp-for="LoginForm.Password" id="password" class="form-control mb-4" placeholder="Password">
-        
-        <div class="d-flex justify-content-between">
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label asp-for="LoginForm.RememberMe" class="form-check-label" for="exampleCheck1">Keep me signed in on this device</label>
-            </div>
-            <div>
-                <a asp-page="ForgotPassword">Forgot password?</a>
-            </div>
+        <div class="mb-3">
+            <label for="inputUsername1" class="form-label small">Username</label>
+            <input asp-for="LoginForm.Username" type="text" class="form-control" id="inputUsername1" aria-describedby="usernameHelp">
         </div>
-        
-        <button class="btn btn-primary btn-block my-4 debounce" type="submit" id="recaptcha">Log in</button>
-        @* @Html.AntiForgeryToken() *@
+        <div class="mb-3">
+            <label for="inputPassword1" class="form-label small">Password</label>
+            <input asp-for="LoginForm.Password" type="password" class="form-control" id="inputPassword1">
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="inputCheck1">
+            <label asp-for="LoginForm.RememberMe" class="form-check-label" for="inputCheck1">Keep me signed in on this device</label>
+        </div>
+
+        <button class="btn btn-primary btn-block my-2 debounce w-100" type="submit" id="recaptcha">Log In</button>
+        @Html.AntiForgeryToken()
     </form>
     
-    <p class="font-weight-light">Dont have an account? <a asp-page="Signup">Sign up for free!</a></p>
+    <p class="text-center small mt-4">
+        Don't have an account? <a asp-page="Signup">Sign up for free!</a> <br />
+        Forgot your password? <a asp-page="ForgotPassword">Reset your password</a>
+    </p>
 </div>
