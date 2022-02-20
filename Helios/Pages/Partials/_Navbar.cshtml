@@ -24,7 +24,7 @@
         </div>
             
         @if ( User.IsLoggedIn() ) {
-            <a asp-page="@Url.Page("/Dashboard")">
+            <a asp-area="" asp-page="/Index">
                 <button class="btn btn-default">Dashboard</button>
             </a>
             <a asp-page="@Url.Page("/Logout")">
