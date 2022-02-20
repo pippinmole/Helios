@@ -5,28 +5,78 @@
 @inject IAppUserManager _userManager
 
 @{
+    ViewData["Title"] = "My Account";
     Layout = "Shared/_DashboardLayout";
 
     var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
 }
 
-<h2 class="text-center">Account details</h2>
+<h2 class="text-center">Settings</h2>
 
-<ul>
-    <li>
-        <strong>Account Type </strong>
-        
-        @user.AccountType
-    </li>
-</ul>
+<form class="m-auto mt-4" style="width: 60%" method="post">
 
-<form asp-page-handler="UpdateAccountType">
-    <select class="form-select" aria-label="Default select example" name="accountType">
-        <option selected>Select account type</option>
-        <option value="@((int)EAccountType.Free)">Free</option>
-        <option value="@((int)EAccountType.Pro)">Pro</option>
-        <option value="@((int)EAccountType.Enterprise)">Enterprise</option>
-    </select>
+    <hr />
+
+    <ul class="d-flex list-unstyled">
+        <li class="col-4">
+            <h5 class="fw-bold">Personal Details</h5>
+            <p style="padding-right: 1rem;">Your personal information is never shown to other users. </p>
+        </li>
+        <li class="col-8">
+            <div class="mb-3">
+                <label for="inputUsername1" class="form-label small">Username</label>
+                <input asp-for="Form.Username" type="text" class="form-control" value="@user.UserName" id="inputUsername1" aria-describedby="usernameHelp">
+            </div>
+            <div class="mb-3">
+                <label for="inputEmail1" class="form-label small">Email Address</label>
+                <input asp-for="Form.Email" type="email" class="form-control" value="@user.Email" id="inputEmail1" aria-describedby="emailHelp">
+            </div>
+        </li>
+    </ul>
+
+    <hr />
+
+    <ul class="d-flex list-unstyled">
+        <li class="col-4">
+            <h5 class="fw-bold">Password</h5>
+            <p style="padding-right: 1rem;">Leave password blank if don't want to change.</p>
+        </li>
+        <li class="col-8">
+            <div class="mb-3">
+                <label for="inputCurrentPassword1" class="form-label small">Current Password</label>
+                <input asp-for="Form.CurrentPassword" type="password" class="form-control" id="inputCurrentPassword1" placeholder="Current Password">
+            </div>
+            <div class="mb-3">
+                <label for="inputNewPassword1" class="form-label small">New Password</label>
+                <input asp-for="Form.NewPassword" type="password" class="form-control" id="inputNewPassword1" placeholder="New Password">
+            </div>
+        </li>
+    </ul>
     
-    <button class="btn btn-primary" type="submit">Upgrade</button>
+    <ul class="d-flex list-unstyled">
+        <li class="col-4"></li>
+        <li class="col-8">
+            <button class="btn btn-primary py-3 px-4" type="submit">Save changes</button>
+            <a href="/" class="btn btn-secondary py-3 px-4">Cancel</a>
+        </li>
+    </ul>
 </form>
+
+@* <ul> *@
+@*     <li> *@
+@*         <strong>Account Type </strong> *@
+@*          *@
+@*         @user.AccountType *@
+@*     </li> *@
+@* </ul> *@
+@* *@
+@* <form asp-page-handler="UpdateAccountType"> *@
+@*     <select class="form-select" aria-label="Default select example" name="accountType"> *@
+@*         <option selected>Select account type</option> *@
+@*         <option value="@((int)EAccountType.Free)">Free</option> *@
+@*         <option value="@((int)EAccountType.Pro)">Pro</option> *@
+@*         <option value="@((int)EAccountType.Enterprise)">Enterprise</option> *@
+@*     </select> *@
+@*      *@
+@*     <button class="btn btn-primary" type="submit">Upgrade</button> *@
+@* </form> *@

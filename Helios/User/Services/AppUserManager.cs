@@ -92,6 +92,10 @@ public class AppUserManager : IAppUserManager {
         return await _userManager.ResetPasswordAsync(user, token, password);
     }
 
+    public async Task<IdentityResult> ChangePasswordAsync(ApplicationUser user, string currentPassword, string newPassword) {
+        return await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+    }
+
     public async Task<IdentityResult> AddToRoleAsync(ApplicationUser user, string role) {
         return await _userManager.AddToRoleAsync(user, role);
     }

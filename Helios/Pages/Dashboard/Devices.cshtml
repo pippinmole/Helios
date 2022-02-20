@@ -10,6 +10,7 @@
 @inject IHeliumService _heliumService
 
 @{
+    ViewData["Title"] = "My Devices";
     Layout = "Shared/_DashboardLayout";
     
     string AddressToExplorerUrl(string address) => $"https://explorer.helium.com/hotspots/{address}";
@@ -35,106 +36,108 @@
 
 <h2 class="text-center">Devices</h2>
 
-<h4 class="text-left">Add new device</h4>
-<div class="dropdown-divider"></div>
+<div style="width: 70%;" class="m-auto">
+    <h4 class="text-left">Add new device</h4>
+    <div class="dropdown-divider"></div>
 
-<form method="post" asp-page-handler="AddDevice">
-    <div class="input-group mb-3">
-        <input name="animalName" type="text" class="form-control" placeholder="Elegant Midnight Kestrel" aria-label="Elegant Midnight Kestrel" aria-describedby="button-addon2">
-        <button class="btn btn-success" type="submit" id="button-addon2">
-            + Add new device
-        </button>
-    </div>
-</form>
+    <form method="post" asp-page-handler="AddDevice">
+        <div class="input-group mb-3">
+            <input name="animalName" type="text" class="form-control" placeholder="Elegant Midnight Kestrel" aria-label="Elegant Midnight Kestrel" aria-describedby="button-addon2">
+            <button class="btn btn-success" type="submit" id="button-addon2">
+                + Add new device
+            </button>
+        </div>
+    </form>
 
-@{
-    var deviceCount = user.Devices.Count;
-    var maxDevices = user.AccountType.MaxDevicesAllowed();
-}
+    @{
+        var deviceCount = user.Devices.Count;
+        var maxDevices = user.AccountType.MaxDevicesAllowed();
+    }
 
-<h4 class="text-left mt-5">
-    Your devices
+    <h4 class="text-left mt-5">
+        Your devices
     
-    <small class="text-muted fs-6">
-        @deviceCount out of @maxDevices device slots used
+        <small class="text-muted fs-6">
+            @deviceCount out of @maxDevices device slots used
         
-        <a href="@Url.Page("/pricing")">Upgrade Now</a>
-    </small>
-</h4>
+            <a href="@Url.Page("/pricing")">Upgrade Now</a>
+        </small>
+    </h4>
 
-<div class="dropdown-divider"></div>
+    <div class="dropdown-divider"></div>
 
-<div class="accordion" id="accordionPanelsStayOpenExample">
-    @for ( var i = 0; i < user.Devices?.Count; i++ ) {
-        var device = user.Devices[i];
-        if ( device == null ) continue;
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+        @for ( var i = 0; i < user.Devices?.Count; i++ ) {
+            var device = user.Devices[i];
+            if ( device == null ) continue;
         
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-heading-@i">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-@i" aria-expanded="false" aria-controls="panelsStayOpen-collapse-@i">
-                    @{
-                        var status = device.LastReport == null
-                            ? "Offline"
-                            : device.LastReport.status.online;
-                    }
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-heading-@i">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-@i" aria-expanded="false" aria-controls="panelsStayOpen-collapse-@i">
+                        @{
+                            var status = device.LastReport == null
+                                ? "Offline"
+                                : device.LastReport.status.online;
+                        }
                     
-                    <span
-                        style="background-color: @StatusToColor(status); border-radius: 999px; width: 15px; height: 15px; margin-right: 1rem;"
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        title="@UppercaseFirst(status)">
-                    </span>
+                        <span
+                            style="background-color: @StatusToColor(status); border-radius: 999px; width: 15px; height: 15px; margin-right: 1rem;"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="@UppercaseFirst(status)">
+                        </span>
 
-                    <span>
-                        @device.AnimalName
+                        <span>
+                            @device.AnimalName
                         
-                        <small class="text-muted">
-                            Updated @UppercaseFirst(device.TimeSinceLastReport().Humanize(minUnit: TimeUnit.Second)) ago
-                        </small>
-                    </span>
-                </button>
-            </h2>
-            <div id="panelsStayOpen-collapse-@i" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-@i">
-                <div class="accordion-body">
-                    <ul class="list-group list-group-flush">
+                            <small class="text-muted">
+                                Updated @UppercaseFirst(device.TimeSinceLastReport().Humanize(minUnit: TimeUnit.Second)) ago
+                            </small>
+                        </span>
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapse-@i" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-@i">
+                    <div class="accordion-body">
+                        <ul class="list-group list-group-flush">
 
-                        @* Uptime *@
-                        <li class="list-group-item">
-                            <strong>Uptime: </strong> IMPLEMENT
-                        </li>
+                            @* Uptime *@
+                            <li class="list-group-item">
+                                <strong>Uptime: </strong> IMPLEMENT
+                            </li>
 
-                        @* Explorer page *@
-                        <li class="list-group-item">
-                            <strong>Explorer page: </strong>
+                            @* Explorer page *@
+                            <li class="list-group-item">
+                                <strong>Explorer page: </strong>
                             
-                            @if ( device.LastReport == null ) {
-                                @:"Unknown"
-                            } else {
-                                <a target="_blank" href="@AddressToExplorerUrl(device.LastReport.address)">
-                                    @device.LastReport.address
-                                </a>
-                            }
-                        </li>
-
-                        @* IP Addresses known *@
-                        <li class="list-group-item">
-                            @if ( device.LastReport == null ) {
-                                @:Unknown
-                            } else {
-                                @foreach ( var ip in device.LastReport.status.GetListenAddresses() ) {
-                                    <strong>IP Address:</strong>
-                                    @ip
-                                    <br/>
+                                @if ( device.LastReport == null ) {
+                                    @:"Unknown"
+                                } else {
+                                    <a target="_blank" href="@AddressToExplorerUrl(device.LastReport.address)">
+                                        @device.LastReport.address
+                                    </a>
                                 }
-                            }
-                        </li>
-                    </ul>
+                            </li>
+
+                            @* IP Addresses known *@
+                            <li class="list-group-item">
+                                @if ( device.LastReport == null ) {
+                                    @:Unknown
+                                } else {
+                                    @foreach ( var ip in device.LastReport.status.GetListenAddresses() ) {
+                                        <strong>IP Address:</strong>
+                                        @ip
+                                        <br/>
+                                    }
+                                }
+                            </li>
+                        </ul>
                     
-                    <form method="post" asp-page-handler="DeleteDevice" asp-route-id="@device.Id">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
+                        <form method="post" asp-page-handler="DeleteDevice" asp-route-id="@device.Id">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>

@@ -1,67 +1,45 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Helios.Data.Users;
 using Helios.Data.Users.Extensions;
-using Microsoft.AspNetCore.Authorization;
+using Helios.Forms;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Helios.Pages.Dashboard; 
+namespace Helios.Pages.Dashboard;
 
 public class AccountModel : DashboardModel {
     private readonly ILogger<AccountModel> _logger;
     private readonly IAppUserManager _userManager;
-    
-    public AccountModel(ILogger<AccountModel> logger, IAppUserManager userManager) : base(userManager) {
+    private readonly INotyfService _notyfService;
+
+    [BindProperty] public ChangeAccountForm Form { get; set; }
+
+    public AccountModel(ILogger<AccountModel> logger, IAppUserManager userManager, INotyfService notyfService) :
+        base(userManager) {
         _logger = logger;
         _userManager = userManager;
+        _notyfService = notyfService;
     }
 
-    public async Task<IActionResult> OnPostUpdateAccountType(EAccountType accountType) {
-        _logger.LogInformation("AccountTypeId: {Id}", accountType);
-        
+    public async Task<IActionResult> OnPostAsync() {
         if ( !ModelState.IsValid )
             return Page();
-                
+
         var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
         if ( user == null ) return Redirect("/");
 
-        user.AccountType = accountType;
+        user.UserName = Form.Username;
 
-        _logger.LogInformation("Set user account type to {Type}", (EAccountType) accountType);
-        
+        if ( user.Email != Form.Email ) {
+            // Changed email, will need to verify again
+            user.Email = Form.Email;
+            user.EmailConfirmed = false;
+        }
+
         await _userManager.UpdateUserAsync(user);
+        await _userManager.ResetPasswordAsync(user, Form.CurrentPassword, Form.NewPassword);
 
-        return Page();
+        _notyfService.Success("Successfully updated profile");
+
+        return Redirect("/");
     }
-
-    // public async Task<IActionResult> OnPostChangeUsername([MaxLength(15), MinLength(10)] string username) {
-    //     if ( !ModelState.IsValid )
-    //         return Page();
-    //             
-    //     var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
-    //     if ( user == null ) return Redirect("/");
-    //
-    //     user.UserName = username;
-    //         
-    //     await _userManager.UpdateUserAsync(user);
-    //         
-    //     _logger.LogWarning("{OldName} is changing their username to {NewName}", user.UserName, username);
-    //
-    //     return Page();
-    // }
-    //     
-    // public async Task<IActionResult> OnPostChangePassword() {
-    //     if ( !ModelState.IsValid )
-    //         return Page();
-    //             
-    //     var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
-    //     if ( user == null ) return Redirect("/");
-    //
-    //     var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-    //     await _mailSender.SendPasswordReset(user.Email, resetToken, this);
-    //         
-    //     _logger.LogInformation("{Username} has requested a password change", user.UserName);
-    //         
-    //     return Page();
-    // }
 }
