@@ -8,6 +8,8 @@ public class Status {
     public List<string> listen_addrs { get; set; }
     public int height { get; set; }
 
+    public bool IsOnline => online.ToLower() == "online";
+    
     public IEnumerable<string> GetListenAddresses() {
         return listen_addrs
             .Where(x => !x.Contains("/p2p/"))

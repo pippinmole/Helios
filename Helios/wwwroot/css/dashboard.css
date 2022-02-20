@@ -44,6 +44,9 @@
 .sidebar .nav-link {
     font-weight: 500;
     color: #333;
+
+    display: flex;
+    align-items: center;
 }
 
 .sidebar .nav-link .feather {
@@ -63,6 +66,10 @@
 .sidebar-heading {
     font-size: .75rem;
     text-transform: uppercase;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
 }
 
 /*

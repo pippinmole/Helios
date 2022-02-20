@@ -36,7 +36,8 @@ public class MailSender : IMailSender {
         }
     }
 
-    public async Task SendResetPasswordAsync(string address,string username, string resetUrl, CancellationToken? token = null) {
+    public async Task SendResetPasswordAsync(string address, string username, string resetUrl,
+        CancellationToken? token = null) {
         var email = _emailFactory.Create()
             .To(address)
             .Subject("Password Reset")
@@ -48,6 +49,23 @@ public class MailSender : IMailSender {
         var response = await email.SendAsync(token).ConfigureAwait(false);
         if ( response.Successful ) {
             _logger.LogInformation("Successfully sent password reset email: {Response}", response.Successful);
+        } else {
+            foreach ( var error in response.ErrorMessages ) {
+                _logger.LogError("Failed to send password reset email: {Response}", error);
+            }
+        }
+    }
+
+    public async Task SendServiceDownAsync(string address, CancellationToken? token = null) {
+        var email = _emailFactory.Create()
+            .To(address)
+            .Subject("Hotspot is offline")
+            .Body(
+                "Attention! 1 or more of your hotspots are offline. Please check your dashboard for more information");
+
+        var response = await email.SendAsync(token).ConfigureAwait(false);
+        if ( response.Successful ) {
+            _logger.LogInformation("Successfully sent service down email: {Response}", response.Successful);
         } else {
             foreach ( var error in response.ErrorMessages ) {
                 _logger.LogError("Failed to send password reset email: {Response}", error);

@@ -35,11 +35,14 @@ public class AccountModel : DashboardModel {
             user.EmailConfirmed = false;
         }
 
+        user.DowntimeNotifyRate = Form.NewNotifyTimespan;
+        user.ReceiveEmails = Form.ReceiveEmails;
+
         await _userManager.UpdateUserAsync(user);
         await _userManager.ResetPasswordAsync(user, Form.CurrentPassword, Form.NewPassword);
 
         _notyfService.Success("Successfully updated profile");
 
-        return Redirect("/");
+        return Redirect("/dashboard/profile");
     }
 }

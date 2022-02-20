@@ -1,6 +1,7 @@
 ﻿using Helios.Data.Users;
 using Helios.Helium;
 using Helios.Helium.Schemas;
+using Helios.MailService;
 
 namespace Helios.Core;
 
@@ -21,6 +22,7 @@ public class UptimeCronJob : CronJobService {
     public override async Task DoWork(CancellationToken cancellationToken) {
         var scope = _serviceProvider.CreateScope();
         var userService = scope.ServiceProvider.GetRequiredService<IAppUserManager>();
+        var mailService = scope.ServiceProvider.GetRequiredService<IMailSender>();
 
         // var users = userService.GetUsersWhere(x => x.Roles.Contains("Paid"));
 
@@ -28,15 +30,26 @@ public class UptimeCronJob : CronJobService {
         // var users = userService.GetUsersInRoleAsync("");
         
         var users = userService.GetUsersWhere(x => true);
-        
+
         foreach ( var user in users ) {
             // _logger.LogInformation("User has paid: {Username}", user.UserName);
 
             user.Devices ??= new List<HeliumMiner>();
-            
+
             foreach ( var device in user.Devices ) {
                 var report = await _heliumService.GetHotspotByAnimalName(device.AnimalName);
                 device.UpdateReport(report);
+            }
+
+            if ( user.Devices.Any(x => !x.LastReport.status.IsOnline) ) {
+                if ( !user.CanSendEmail() )
+                    continue;
+
+                _logger.LogInformation("Sending downtime email to {Username}", user.UserName);
+                
+                // Send downtime notification
+                user.LastEmailDate = DateTime.Now;
+                await mailService.SendServiceDownAsync(user.Email, cancellationToken);
             }
 
             await userService.UpdateUserAsync(user);

@@ -1,6 +1,8 @@
 ﻿@page "/dashboard/profile"
 @using Helios.Data.Users
 @using Helios.Data.Users.Extensions
+@using Humanizer
+@using Microsoft.AspNetCore.Html
 @model AccountModel
 @inject IAppUserManager _userManager
 
@@ -11,9 +13,19 @@
     var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
 }
 
+@{
+
+    HtmlString SelectedDropdown(TimeSpan a, TimeSpan b) {
+        return a == b
+            ? new HtmlString("selected")
+            : null;
+    }
+
+}
+
 <h2 class="text-center">Settings</h2>
 
-<form class="m-auto mt-4" style="width: 60%" method="post">
+<form class="m-auto mt-4" style="width: 65%" method="post">
 
     <hr />
 
@@ -34,6 +46,38 @@
         </li>
     </ul>
 
+    <hr />
+    
+        <ul class="d-flex list-unstyled">
+            <li class="col-4">
+                <h5 class="fw-bold">Notifications</h5>
+                @* <p style="padding-right: 1rem;">Leave password blank if don't want to change.</p> *@
+            </li>
+            <li class="col-8">
+                <select asp-for="Form.NewNotifyTimespan" class="form-select" aria-label="Select how often you want to be notified">
+                    <option>Select how often you want to be notified</option>
+                    
+                    @foreach ( var time in user.GetEligibleNotifyTimespans() ) {
+                        if ( time == user.DowntimeNotifyRate ) {
+                            <option selected value="@time">Every @time.Humanize()</option>
+                        } else {
+                            <option value="@time">Every @time.Humanize()</option>   
+                        }
+                    }
+                </select>
+                
+                <div class="form-check form-switch mt-4">
+                    <input autocomplete="off" asp-for="Form.ReceiveEmails" checked="@user.ReceiveEmails" class="form-check-input" type="checkbox" id="flexSwitchReceiveEmails">
+                    <label class="form-check-label" for="flexSwitchReceiveEmails">Receive email notifications</label>
+                </div>
+                @* <div class="form-check form-switch mt-1"> *@
+                @*     <input class="form-check-input" type="checkbox" id="flexSwitchReceiveSms" checked> *@
+                @*     <label class="form-check-label" for="flexSwitchReceiveSms">Receive SMS notifications</label> *@
+                @* </div> *@
+                
+            </li>
+        </ul>
+    
     <hr />
 
     <ul class="d-flex list-unstyled">
