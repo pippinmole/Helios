@@ -7,10 +7,10 @@ public class SignUpForm {
     [Required, MaxLength(15), UnicodeOnly]
     public string Username { get; set; }
             
-    [Required, DataType(DataType.EmailAddress), UnicodeOnly]
+    [Required, DataType(DataType.EmailAddress), MaxLength(320), UnicodeOnly]
     public string Email { get; set; }
             
-    [Required, StringLength(32), DataType(DataType.Password), UnicodeOnly]
+    [Required, StringLength(32), DataType(DataType.Password), UnicodeOnly, EmailAddress]
     public string Password { get; set; }
 
     [Required]

@@ -3,6 +3,6 @@
 namespace Helios.Forms; 
 
 public class AddDeviceForm {
-    [Required]
+    [Required, MaxLength(50)]
     public string AnimalName { get; set; }
 }
