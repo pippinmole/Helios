@@ -30,7 +30,7 @@ var mailgunOptions = new MailSenderOptions();
 builder.Configuration.GetSection(MailSenderOptions.Name).Bind(mailgunOptions);
 
 builder.Services
-    .AddFluentEmail($"{mailgunOptions.FromName}@{mailgunOptions.Domain}", "mailgun")
+    .AddFluentEmail($"{mailgunOptions.FromName}@{mailgunOptions.Domain}", "Helios")
     .AddRazorRenderer($"{Directory.GetCurrentDirectory()}/Email Templates")
     .AddMailGunSender(mailgunOptions.Domain, mailgunOptions.ApiKey, MailGunRegion.EU);
 
