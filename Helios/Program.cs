@@ -23,6 +23,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDataProtection();
 builder.Services.AddAntiforgery();
 
+builder.Services.Configure<HeliumOptions>(builder.Configuration.GetSection(HeliumOptions.Name));
 builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
 builder.Services.Configure<PaypalOptions>(builder.Configuration.GetSection(PaypalOptions.Name));
 

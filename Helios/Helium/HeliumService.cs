@@ -31,6 +31,17 @@ public class HeliumService : IHeliumService {
             : result.data[0];
     }
 
+    public async Task<TransactionPage> GetTransactionsFromAddress(string address, string cursor = null) {
+        if ( string.IsNullOrEmpty(address) ) return null;
+
+        var url = $"https://api.helium.io/v1/accounts/{address}/roles";
+
+        if ( !string.IsNullOrEmpty(cursor) )
+            url += $"?cursor={cursor}";
+        
+        return await Get<TransactionPage>(url);
+    }
+
     private async Task<T> Get<T>(string url) {
         var json = await _client.GetStringAsync(url);
         var obj = JsonConvert.DeserializeObject<T>(json, _serializerSettings);

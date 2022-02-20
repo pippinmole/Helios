@@ -36,4 +36,13 @@ public static class AppUserExtensions {
             _ => throw new ArgumentOutOfRangeException()
         };
     }
+
+    public static string GenerateMemoForProduct(this ApplicationUser user, Product product) {
+        var str = "";
+
+        str += user.Id.ToString()[..7];
+        str += product.Id;
+
+        return str.Length > 8 ? null : str;
+    }
 }

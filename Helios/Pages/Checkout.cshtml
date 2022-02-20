@@ -1,6 +1,15 @@
 ﻿@page "/checkout/{id}"
 @using System.Globalization
+@using System.Web
+@using Helios.Data.Users
+@using Helios.Data.Users.Extensions
+@using Helios.Helium
+@using Helios.Helium.Schemas
+@using Microsoft.Extensions.Options
+@using Newtonsoft.Json
 @model Helios.Pages.CheckoutModel
+@inject IAppUserManager _userManager
+@inject IOptions<HeliumOptions> _heliumOptions
 
 @{
     string FloatToPriceUsd(float value) {
@@ -8,9 +17,25 @@
             ? "Free" 
             : $"${value.ToString("N2", CultureInfo.CurrentCulture)}";
     }
+
+    var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
 }
 
 <div class="container">
+    
+@{
+    var obj = new HeliumQRSchema {
+        type = "payment",
+        address = _heliumOptions.Value.TransactionAddress,
+        amount = "1",
+        memo = user.GenerateMemoForProduct(Model.Cart)
+    };
+
+    var json = JsonConvert.SerializeObject(obj);
+}
+    
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=@json"/>
+    
     <div class="row">
         <div class="col-md-4 order-md-2 mb-4">
             <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -39,7 +64,7 @@
                     </div>
                 </div>
             </form>
-            
+
             <!-- Set up a container element for the button -->
             <div id="paypal-button-container"></div>
         </div>
