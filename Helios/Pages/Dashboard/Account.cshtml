@@ -13,16 +13,6 @@
     var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
 }
 
-@{
-
-    HtmlString SelectedDropdown(TimeSpan a, TimeSpan b) {
-        return a == b
-            ? new HtmlString("selected")
-            : null;
-    }
-
-}
-
 <h2 class="text-center">Settings</h2>
 
 <form class="m-auto mt-4" style="width: 65%" method="post">
@@ -54,6 +44,7 @@
                 @* <p style="padding-right: 1rem;">Leave password blank if don't want to change.</p> *@
             </li>
             <li class="col-8">
+                <h5 class="small">Notification frequency</h5>
                 <select asp-for="Form.NewNotifyTimespan" class="form-select" aria-label="Select how often you want to be notified">
                     <option>Select how often you want to be notified</option>
                     
