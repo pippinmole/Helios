@@ -1,13 +1,10 @@
 ﻿@page "/dashboard/devices"
 @using Helios.Data.Users.Extensions
 @using Helios.Data.Users
-@using Helios.Helium
-@using Helios.Helium.Schemas
 @using Humanizer
 @using Humanizer.Localisation
 @model DevicesModel
 @inject IAppUserManager _userManager
-@inject IHeliumService _heliumService
 
 @{
     ViewData["Title"] = "My Devices";

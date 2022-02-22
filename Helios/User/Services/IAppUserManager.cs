@@ -33,5 +33,5 @@ public interface IAppUserManager {
     Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user);
     Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string token);
 
-    List<ApplicationUser> GetUsersWhere(Expression<Func<ApplicationUser, bool>> predicate);
+    IEnumerable<ApplicationUser> GetUsersWhere(Expression<Func<ApplicationUser, bool>> predicate);
 }

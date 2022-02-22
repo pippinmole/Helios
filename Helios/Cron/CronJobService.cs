@@ -13,7 +13,7 @@ public abstract class CronJobService : IHostedService, IDisposable {
     }
 
     public virtual async Task StartAsync(CancellationToken cancellationToken) {
-        await ScheduleJob(cancellationToken);
+        await ScheduleJob(cancellationToken).ConfigureAwait(false);
     }
 
     protected virtual async Task ScheduleJob(CancellationToken cancellationToken) {
@@ -22,7 +22,7 @@ public abstract class CronJobService : IHostedService, IDisposable {
             var delay = next.Value - DateTimeOffset.Now;
             // prevent non-positive values from being passed into Timer
             if ( delay.TotalMilliseconds <= 0 ) {
-                await ScheduleJob(cancellationToken);
+                await ScheduleJob(cancellationToken).ConfigureAwait(false);
             }
 
             _timer = new System.Timers.Timer(delay.TotalMilliseconds);
@@ -31,11 +31,11 @@ public abstract class CronJobService : IHostedService, IDisposable {
                 _timer = null;
 
                 if ( !cancellationToken.IsCancellationRequested ) {
-                    await DoWork(cancellationToken);
+                    await DoWork(cancellationToken).ConfigureAwait(false);
                 }
 
                 if ( !cancellationToken.IsCancellationRequested ) {
-                    await ScheduleJob(cancellationToken); // reschedule next
+                    await ScheduleJob(cancellationToken).ConfigureAwait(false); // reschedule next
                 }
             };
             _timer.Start();

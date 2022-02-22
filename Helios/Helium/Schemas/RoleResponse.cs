@@ -1,6 +1,6 @@
 ﻿namespace Helios.Helium.Schemas; 
 
-public class Transaction {
+public class RoleResponse {
     public string type { get; set; }
     public int time { get; set; }
     public string role { get; set; }

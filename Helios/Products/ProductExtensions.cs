@@ -13,7 +13,7 @@ public static class ProductExtensions {
             Category = "DIGITAL_GOODS",
             UnitAmount = new Money() {
                 CurrencyCode = "USD",
-                Value = product.PriceUsd.ToString(CultureInfo.InvariantCulture)
+                Value = product.PriceHnt.ToString(CultureInfo.InvariantCulture)
             },
             Quantity = "1"
         };

@@ -1,7 +1,10 @@
-﻿using Helios.Data.Users;
+﻿using Helios.Core.Extensions;
+using Helios.Data.Users;
 using Helios.Helium;
 using Helios.Helium.Schemas;
 using Helios.MailService;
+using Helios.Products;
+using Microsoft.Extensions.Options;
 
 namespace Helios.Core;
 
@@ -9,14 +12,16 @@ public class UptimeCronJob : CronJobService {
     private readonly ILogger<UptimeCronJob> _logger;
     private readonly IHeliumService _heliumService;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IOptions<HeliumOptions> _heliumOptions;
 
     public UptimeCronJob(IScheduleConfig<UptimeCronJob> config, ILogger<UptimeCronJob> logger,
-        IHeliumService heliumService, IServiceProvider serviceProvider)
+        IHeliumService heliumService, IServiceProvider serviceProvider, IOptions<HeliumOptions> heliumOptions)
         : base(config.CronExpression, config.TimeZoneInfo) {
 
         _logger = logger;
         _heliumService = heliumService;
         _serviceProvider = serviceProvider;
+        _heliumOptions = heliumOptions;
     }
 
     public override async Task DoWork(CancellationToken cancellationToken) {
@@ -28,31 +33,32 @@ public class UptimeCronJob : CronJobService {
 
         // TODO: Remove this
         // var users = userService.GetUsersInRoleAsync("");
-        
+
         var users = userService.GetUsersWhere(x => true);
 
         foreach ( var user in users ) {
-            // _logger.LogInformation("User has paid: {Username}", user.UserName);
-
-            user.Devices ??= new List<HeliumMiner>();
-
-            foreach ( var device in user.Devices ) {
-                var report = await _heliumService.GetHotspotByAnimalName(device.AnimalName);
-                device.UpdateReport(report);
-            }
-
-            if ( user.Devices.Any(x => !x.LastReport.status.IsOnline) ) {
-                if ( !user.CanSendEmail() )
-                    continue;
-
-                _logger.LogInformation("Sending downtime email to {Username}", user.UserName);
-                
-                // Send downtime notification
-                user.LastEmailDate = DateTime.Now;
-                await mailService.SendServiceDownAsync(user.Email, cancellationToken);
-            }
+            await UpdateDeviceData(user, mailService, cancellationToken);
 
             await userService.UpdateUserAsync(user);
+        }
+    }
+
+    private async Task UpdateDeviceData(ApplicationUser user, IMailSender mailSender, CancellationToken cancellationToken) {
+        user.Devices ??= new List<HeliumMiner>();
+
+        foreach ( var device in user.Devices ) {
+            var report = await _heliumService.GetHotspotByAnimalName(device.AnimalName);
+            device.UpdateReport(report);
+        }
+
+        if ( user.Devices.Any(x => !x.LastReport.status.IsOnline) ) {
+            if ( !user.CanSendEmail() ) return;
+
+            _logger.LogInformation("Sending downtime email to {Username}", user.UserName);
+
+            // Send downtime notification
+            user.LastEmailDate = DateTime.Now;
+            await mailSender.SendServiceDownAsync(user.Email, cancellationToken);
         }
     }
 }

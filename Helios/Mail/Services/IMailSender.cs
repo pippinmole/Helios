@@ -1,4 +1,5 @@
 using FluentEmail.Core;
+using Helios.Products;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Helios.MailService;
@@ -6,5 +7,6 @@ namespace Helios.MailService;
 public interface IMailSender {
     Task SendVerifyEmailAsync(string address, string username, string verifyUrl, CancellationToken? token = null);
     Task SendResetPasswordAsync(string address, string username, string resetUrl, CancellationToken? token = null);
+    Task SendPurchaseConfirmedAsync(string address, ProductOrder order, CancellationToken? token = null);
     Task SendServiceDownAsync(string address, CancellationToken? token = null);
 }

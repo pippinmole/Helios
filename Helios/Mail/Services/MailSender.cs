@@ -1,6 +1,7 @@
 using System.Web;
 using FluentEmail.Core;
 using Helios.Email_Templates;
+using Helios.Products;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -54,6 +55,10 @@ public class MailSender : IMailSender {
                 _logger.LogError("Failed to send password reset email: {Response}", error);
             }
         }
+    }
+
+    public Task SendPurchaseConfirmedAsync(string address, ProductOrder order, CancellationToken? token = null) {
+        return Task.CompletedTask;
     }
 
     public async Task SendServiceDownAsync(string address, CancellationToken? token = null) {

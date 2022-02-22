@@ -8,6 +8,7 @@ using Helios.Database;
 using Helios.Helium;
 using Helios.MailService;
 using Helios.Paypal;
+using Helios.Products.Services;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
 using reCAPTCHA.AspNetCore;
@@ -39,6 +40,7 @@ builder.Services.AddRecaptcha(builder.Configuration.GetSection("RecaptchaSetting
 builder.Services.AddSingleton<IDatabaseContext, DatabaseContext>();
 builder.Services.AddSingleton<IPaypalDatabase, PaypalDatabase>();
 builder.Services.AddSingleton<IHeliumService, HeliumService>();
+builder.Services.AddSingleton<IOrderValidator, OrderValidator>();
 builder.Services.AddScoped<IAppUserManager, AppUserManager>();
 builder.Services.AddScoped<IMailSender, MailSender>();
 
@@ -49,9 +51,14 @@ builder.Services.AddNotyf(config => {
 });
 
 builder.Services.AddCronJob<UptimeCronJob>(options => {
-    options.CronExpression = "*/5 * * * * *";
+    options.CronExpression = "*/15 * * * * *";
     options.TimeZoneInfo = TimeZoneInfo.Local;
 });
+
+// builder.Services.AddCronJob<TestCronJob>(options => {
+//     options.CronExpression = "*/5 * * * * *";
+//     options.TimeZoneInfo = TimeZoneInfo.Local;
+// });
 
 builder.Services.AddIdentityMongoDbProvider<ApplicationUser, ApplicationRole, ObjectId>(
         identity => {

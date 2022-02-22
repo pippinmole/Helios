@@ -24,7 +24,7 @@
                     <li><i class="bi bi-check"></i> Email notifications</li>
                 </ul>
                 @if ( User.IsLoggedIn() ) {
-                    <a href="/checkout/product-1">
+                    <a href="/createorder/1">
                         <button type="button" class="w-100 btn btn-lg btn-outline-primary">Sign up for free</button>
                     </a>   
                 } else {
@@ -49,7 +49,7 @@
                 </ul>
                 
                 @if ( User.IsLoggedIn() ) {
-                    <a href="/checkout/@Product.ProTier.Id">
+                    <a href="/createorder/@Product.ProTier.Id">
                         <button type="button" class="w-100 btn btn-lg btn-primary">Buy now</button>
                     </a>          
                 } else {
@@ -74,7 +74,7 @@
                 </ul>
                 
                 @if ( User.IsLoggedIn() ) {
-                    <a href="/checkout/@Product.EnterpriseTier.Id">
+                    <a href="/createorder/@Product.EnterpriseTier.Id">
                         <button type="button" class="w-100 btn btn-lg btn-primary">Buy now</button>
                     </a>          
                 } else {

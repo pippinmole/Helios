@@ -13,13 +13,13 @@ public class IndexModel : PageModel {
         _logger = logger;
         _userManager = userManager;
     }
-    
+
     public async Task<IActionResult> OnGetAsync() {
         if ( !User.IsLoggedIn() ) return Page();
-        
+
         var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
         if ( user == null ) return Page();
-        
+
         return user.EmailConfirmed
             ? Redirect("dashboard")
             : Redirect("verify");

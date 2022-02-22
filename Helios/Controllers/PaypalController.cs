@@ -48,12 +48,12 @@ public class PaypalController : ControllerBase {
                 new() {
                     AmountWithBreakdown = new AmountWithBreakdown {
                         CurrencyCode = "USD",
-                        Value = product.PriceUsd.ToString(CultureInfo.InvariantCulture),
+                        Value = product.PriceHnt.ToString(CultureInfo.InvariantCulture),
                         AmountBreakdown = new AmountBreakdown() {
                             Discount = new Money() { CurrencyCode = "USD", Value = "0"},
                             Handling = new Money() { CurrencyCode = "USD", Value = "0"},
                             Insurance = new Money() { CurrencyCode = "USD", Value = "0"},
-                            ItemTotal = new Money() { CurrencyCode = "USD", Value = product.PriceUsd.ToString(CultureInfo.InvariantCulture)},
+                            ItemTotal = new Money() { CurrencyCode = "USD", Value = product.PriceHnt.ToString(CultureInfo.InvariantCulture)},
                             Shipping = new Money() { CurrencyCode = "USD", Value = "0"},
                             ShippingDiscount = new Money() { CurrencyCode = "USD", Value = "0"},
                             TaxTotal = new Money() { CurrencyCode = "USD", Value = "0"},
