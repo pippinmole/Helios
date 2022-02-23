@@ -31,6 +31,8 @@
       <PackageReference Include="PayPalCheckoutSdk" Version="1.0.4" />
       <PackageReference Include="RazorLight" Version="2.0.0-rc.6" />
       <PackageReference Include="reCAPTCHA.AspNetCore" Version="3.0.10" />
+      <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
+      <PackageReference Include="Serilog.Sinks.Datadog.Logs" Version="0.3.6" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 

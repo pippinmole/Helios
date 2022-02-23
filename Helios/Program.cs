@@ -5,6 +5,7 @@ using FluentEmail.Mailgun;
 using Helios.Core;
 using Helios.Data.Users;
 using Helios.Database;
+using Helios.Datadog;
 using Helios.Helium;
 using Helios.MailService;
 using Helios.Paypal;
@@ -12,8 +13,30 @@ using Helios.Products.Services;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
 using reCAPTCHA.AspNetCore;
+using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, config) => {
+    config.ReadFrom.Configuration(context.Configuration);
+
+    var options = context.Configuration.GetSection("Serilog:Datadog")?.Get<DataDogOptions>();
+    if ( string.IsNullOrEmpty(options?.ApiKey) ) return;
+
+    config.WriteTo.DatadogLogs(
+        options.ApiKey,
+        ".NET",
+        options.ServiceName ?? "Helios",
+        options.HostName ?? Environment.MachineName,
+        new[] {
+            $"env:{options.EnvironmentName ?? context.HostingEnvironment.EnvironmentName}",
+            $"assembly:{options.AssemblyName ?? context.HostingEnvironment.ApplicationName}"
+        },
+        options.ToDatadogConfiguration(),
+        logLevel: options.OverrideLogLevel ?? LogEventLevel.Verbose
+    );
+}, writeToProviders: true);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
