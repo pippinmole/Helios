@@ -57,7 +57,7 @@ public class MailSender : IMailSender {
         }
     }
 
-    public Task SendPurchaseConfirmedAsync(string address, ProductOrder order, CancellationToken? token = null) {
+    public Task SendPurchaseConfirmedAsync(string address, Product order, CancellationToken? token = null) {
         return Task.CompletedTask;
     }
 

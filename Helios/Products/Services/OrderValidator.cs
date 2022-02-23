@@ -8,7 +8,8 @@ namespace Helios.Products.Services;
 
 public class OrderValidateResult {
     public bool Successful => Error == null;
-    public string? Error { get; set; } = null;
+    public string Error { get; set; }
+    public Product Product { get; set; }
 }
 
 public class OrderValidator : IOrderValidator {
@@ -22,10 +23,9 @@ public class OrderValidator : IOrderValidator {
         _heliumService = heliumService;
     }
 
-    public async Task<OrderValidateResult> ValidateOrder(ApplicationUser user, ProductOrder product, string hash, CancellationToken cancellationToken = default) {
+    public async Task<OrderValidateResult> ValidateOrder(ApplicationUser user, string hash, CancellationToken cancellationToken = default) {
 
         var result = new OrderValidateResult();
-        var prod = Product.Tiers[product.ProductId];
 
         if ( !HeliumHelper.IsValidHash(hash) ) {
             result.Error = "Transaction hash is not in the right format";
@@ -40,7 +40,10 @@ public class OrderValidator : IOrderValidator {
         }
 
         var memo = payment.GetDecodedMemo();
-        _logger.LogInformation("Memo: '{Memo}' - User: '{User}'", memo[..7], user.Id.ToString()[..7]);
+        if ( !int.TryParse(memo[7].ToString(), out var productId) ) {
+            result.Error = "Memo is malformed";
+            return result;
+        }
         
         if ( memo[..7] != user.Id.ToString()[..7] ) {
             result.Error = "Memo does not match user";
@@ -59,16 +62,18 @@ public class OrderValidator : IOrderValidator {
             return result;
         }
 
-        if ( payment.AmountHnt < prod.PriceHnt ) {
+        var product = Product.Tiers[productId];
+        if ( payment.AmountHnt < product.PriceHnt ) {
             result.Error = "Not enough HNT paid";
             return result;
         }
 
+        result.Product = product;
         return result;
     }
 }
 
 public interface IOrderValidator {
-    Task<OrderValidateResult> ValidateOrder(ApplicationUser user, ProductOrder product, string hash,
+    Task<OrderValidateResult> ValidateOrder(ApplicationUser user, string hash,
         CancellationToken cancellationToken = default);
 }

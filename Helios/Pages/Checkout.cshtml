@@ -1,4 +1,4 @@
-﻿@page "/checkout"
+﻿@page "/checkout/{id:int}"
 @using Helios.Data.Users
 @using Helios.Data.Users.Extensions
 @using Helios.Helium
@@ -12,8 +12,8 @@
 
 @{
     var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
-    var cart = Product.Tiers[user.Order.ProductId];
-    
+    var cart = Product.Tiers[int.Parse(HttpContext.Request.RouteValues["id"].ToString())];
+
     var qrSchema = new HeliumQRSchema {
         type = "payment",
         address = _heliumOptions.Value.TransactionAddress,

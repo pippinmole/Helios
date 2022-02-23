@@ -32,13 +32,9 @@ public class CheckoutModel : PageModel {
         _orderValidator = orderValidator;
     }
 
-    public async Task<IActionResult> OnGetAsync() {
-        if ( !User.IsLoggedIn() )
-            return Redirect("/");
-
-        var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
-        if ( user?.Order == null ) return Redirect("/");
-
+    public IActionResult OnGet() {
+        if ( !User.IsLoggedIn() ) return Redirect("/");
+        
         return Page();
     }
 
@@ -47,21 +43,21 @@ public class CheckoutModel : PageModel {
         if ( !User.IsLoggedIn() ) return Redirect("/");
 
         var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
-        if ( user?.Order == null ) return Redirect("/");
+        if ( user == null ) return Redirect("/");
 
         _logger.LogInformation("Checking transaction '{Hash}'", hash);
 
-        var result = await _orderValidator.ValidateOrder(user, user.Order, hash, cancellationToken);
+        var result = await _orderValidator.ValidateOrder(user, hash, cancellationToken);
         if ( result.Successful ) {
             // good transaction, upgrade account
-            user.AccountType = (EAccountType) user.Order.ProductId;
+            user.AccountType = (EAccountType) result.Product.Id;
             user.PreviousOrderHashes.Add(hash);
-            user.Order = null;
+            // user.Order = null;
 
             await _userManager.UpdateUserAsync(user);   
             
             // Send confirmation email
-            await _mailSender.SendPurchaseConfirmedAsync(user.Email, user.Order);
+            await _mailSender.SendPurchaseConfirmedAsync(user.Email, result.Product);
 
             // TODO: Payment successful page
             return Redirect("/");
