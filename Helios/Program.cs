@@ -59,7 +59,7 @@ builder.Configuration.GetSection(MailSenderOptions.Name).Bind(mailgunOptions);
 
 builder.Services
     .AddFluentEmail($"{mailgunOptions.FromName}@{mailgunOptions.Domain}", "Helios")
-    .AddRazorRenderer($"{Directory.GetCurrentDirectory()}/Email Templates")
+    .AddRazorRenderer($"{builder.Environment.ContentRootPath}/Email Templates")
     .AddMailGunSender(mailgunOptions.Domain, mailgunOptions.ApiKey, MailGunRegion.EU);
 
 builder.Services.AddRecaptcha(builder.Configuration.GetSection("RecaptchaSettings"));
