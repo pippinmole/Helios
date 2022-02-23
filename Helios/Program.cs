@@ -22,7 +22,7 @@ builder.Host.UseSerilog((context, config) => {
     config.ReadFrom.Configuration(context.Configuration);
 
     var options = context.Configuration.GetSection("Serilog:Datadog")?.Get<DataDogOptions>();
-    if ( string.IsNullOrEmpty(options?.ApiKey) ) return;
+    if ( context.HostingEnvironment.IsDevelopment() || string.IsNullOrEmpty(options?.ApiKey) ) return;
 
     config.WriteTo.DatadogLogs(
         options.ApiKey,

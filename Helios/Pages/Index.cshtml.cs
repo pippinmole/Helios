@@ -16,7 +16,7 @@ public class IndexModel : PageModel {
 
     public async Task<IActionResult> OnGetAsync() {
         if ( !User.IsLoggedIn() ) return Page();
-        
+
         var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
         if ( user == null ) return Page();
 
