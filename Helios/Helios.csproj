@@ -89,4 +89,13 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\LICENSE.md" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="EmailTemplates\ResetPassword.cshtml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Update="EmailTemplates\VerifyEmail.cshtml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
