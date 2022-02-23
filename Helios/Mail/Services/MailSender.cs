@@ -65,8 +65,11 @@ public class MailSender : IMailSender {
         var email = _emailFactory.Create()
             .To(address)
             .Subject("Hotspot is offline")
-            .Body(
-                "Attention! 1 or more of your hotspots are offline. Please check your dashboard for more information");
+            .Body("Attention! 1 or more of your hotspots are offline. Please check your dashboard for more information")
+            .UsingTemplateFromFile("Email Templates/ResetPassword.cshtml", new ResetPasswordEmailModel {
+                Username = "pippin_mole",
+                ResetUrl = "google.com"
+            });
 
         var response = await email.SendAsync(token).ConfigureAwait(false);
         if ( response.Successful ) {
