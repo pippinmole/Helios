@@ -54,9 +54,11 @@ builder.Services.Configure<PaypalOptions>(builder.Configuration.GetSection(Paypa
 var mailgunOptions = new MailSenderOptions();
 builder.Configuration.GetSection(MailSenderOptions.Name).Bind(mailgunOptions);
 
+Console.WriteLine(Path.Combine(builder.Environment.ContentRootPath, "Email Templates"));
+
 builder.Services
     .AddFluentEmail($"{mailgunOptions.FromName}@{mailgunOptions.Domain}", "Helios")
-    .AddRazorRenderer($"{Directory.GetCurrentDirectory()}/Email Templates")
+    .AddRazorRenderer(Path.Combine(builder.Environment.ContentRootPath, "EmailTemplates"))
     .AddMailGunSender(mailgunOptions.Domain, mailgunOptions.ApiKey, MailGunRegion.EU);
 
 builder.Services.AddRecaptcha(builder.Configuration.GetSection("RecaptchaSettings"));
