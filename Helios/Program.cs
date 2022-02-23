@@ -22,7 +22,10 @@ builder.Host.UseSerilog((context, config) => {
     config.ReadFrom.Configuration(context.Configuration);
 
     var options = context.Configuration.GetSection("Serilog:Datadog")?.Get<DataDogOptions>();
-    if ( context.HostingEnvironment.IsDevelopment() || string.IsNullOrEmpty(options?.ApiKey) ) return;
+    if ( context.HostingEnvironment.IsDevelopment() || string.IsNullOrEmpty(options?.ApiKey) ) {
+        Console.WriteLine("Hi");
+        return;
+    }
 
     config.WriteTo.DatadogLogs(
         options.ApiKey,
@@ -36,7 +39,7 @@ builder.Host.UseSerilog((context, config) => {
         options.ToDatadogConfiguration(),
         logLevel: options.OverrideLogLevel ?? LogEventLevel.Verbose
     );
-}, true, true);
+}, true);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
