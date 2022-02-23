@@ -1,9 +1,6 @@
-﻿using Helios.Core.Extensions;
-using Helios.Data.Users;
+﻿using Helios.Data.Users;
 using Helios.Helium;
-using Helios.Helium.Schemas;
 using Helios.MailService;
-using Helios.Products;
 using Microsoft.Extensions.Options;
 
 namespace Helios.Core;
@@ -51,7 +48,7 @@ public class UptimeCronJob : CronJobService {
             device.UpdateReport(report);
         }
 
-        if ( user.Devices.Any(x => !x.LastReport.status.IsOnline) ) {
+        if ( user.Devices.Any(x => x != null && !x.LastReport.status.IsOnline) ) {
             if ( !user.CanSendEmail() ) return;
 
             _logger.LogInformation("Sending downtime email to {Username}", user.UserName);

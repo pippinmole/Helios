@@ -8,7 +8,7 @@ namespace Helios.Data.Users;
 
 [BsonIgnoreExtraElements]
 public sealed class ApplicationUser : MongoUser<ObjectId> {
-    public List<HeliumMiner> Devices { get; set; }
+    public List<HeliumMiner> Devices { get; set; } = new();
     public EAccountType AccountType { get; set; } = EAccountType.Free;
     public TimeSpan DowntimeNotifyRate { get; set; } = TimeSpan.FromMinutes(30);
     public bool ReceiveEmails { get; set; } = true;
