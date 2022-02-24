@@ -1,7 +1,6 @@
 using AspNetCore.Identity.Mongo;
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
-using FluentEmail.Mailgun;
 using Helios.Core;
 using Helios.Data.Users;
 using Helios.Database;
@@ -22,10 +21,7 @@ builder.Host.UseSerilog((context, config) => {
     config.ReadFrom.Configuration(context.Configuration);
 
     var options = context.Configuration.GetSection("Serilog:Datadog")?.Get<DataDogOptions>();
-    if ( context.HostingEnvironment.IsDevelopment() || string.IsNullOrEmpty(options?.ApiKey) ) {
-        Console.WriteLine("Hi");
-        return;
-    }
+    if ( context.HostingEnvironment.IsDevelopment() || string.IsNullOrEmpty(options?.ApiKey) ) return;
 
     config.WriteTo.DatadogLogs(
         options.ApiKey,
@@ -39,13 +35,14 @@ builder.Host.UseSerilog((context, config) => {
         options.ToDatadogConfiguration(),
         logLevel: options.OverrideLogLevel ?? LogEventLevel.Verbose
     );
-}, true);
+}, writeToProviders: true);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddHttpClient();
 
 builder.Services.AddDataProtection();
 builder.Services.AddAntiforgery();
@@ -53,14 +50,15 @@ builder.Services.AddAntiforgery();
 builder.Services.Configure<HeliumOptions>(builder.Configuration.GetSection(HeliumOptions.Name));
 builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
 builder.Services.Configure<PaypalOptions>(builder.Configuration.GetSection(PaypalOptions.Name));
+builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
 
-var mailgunOptions = new MailSenderOptions();
-builder.Configuration.GetSection(MailSenderOptions.Name).Bind(mailgunOptions);
+// var mailgunOptions = new MailSenderOptions();
+// builder.Configuration.GetSection(MailSenderOptions.Name).Bind(mailgunOptions);
 
-builder.Services
-    .AddFluentEmail($"{mailgunOptions.FromName}@{mailgunOptions.Domain}", "Helios")
-    .AddRazorRenderer(Path.Combine(builder.Environment.ContentRootPath, "Email Templates"))
-    .AddMailGunSender(mailgunOptions.Domain, mailgunOptions.ApiKey, MailGunRegion.EU);
+// builder.Services
+//     .AddFluentEmail($"{mailgunOptions.FromName}@{mailgunOptions.Domain}", "Helios")
+//     .AddRazorRenderer()
+//     .AddMailGunSender(mailgunOptions.Domain, mailgunOptions.ApiKey, MailGunRegion.EU);
 
 builder.Services.AddRecaptcha(builder.Configuration.GetSection("RecaptchaSettings"));
 builder.Services.AddSingleton<IDatabaseContext, DatabaseContext>();
@@ -80,11 +78,6 @@ builder.Services.AddCronJob<UptimeCronJob>(options => {
     options.CronExpression = "0 0/5 * 1/1 * ?";
     options.TimeZoneInfo = TimeZoneInfo.Local;
 });
-
-// builder.Services.AddCronJob<TestCronJob>(options => {
-//     options.CronExpression = "*/5 * * * * *";
-//     options.TimeZoneInfo = TimeZoneInfo.Local;
-// });
 
 builder.Services.AddIdentityMongoDbProvider<ApplicationUser, ApplicationRole, ObjectId>(
         identity => {

@@ -1,6 +1,7 @@
 ﻿using Helios.Data.Users;
 using Helios.Data.Users.Extensions;
 using Helios.MailService;
+using Helios.Products;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -20,9 +21,13 @@ public class IndexModel : PageModel {
     public async Task<IActionResult> OnGetAsync() {
         if ( !User.IsLoggedIn() ) return Page();
 
-        _logger.LogInformation("Sending email");
+        await _mailSender.SendResetPasswordAsync("icondesk1@gmail.com", "pippin_mole", "google.com",
+            CancellationToken.None);
+        await _mailSender.SendPurchaseConfirmedAsync("icondesk1@gmail.com", Product.ProTier, CancellationToken.None);
         await _mailSender.SendServiceDownAsync("icondesk1@gmail.com", CancellationToken.None);
-        
+        await _mailSender.SendVerifyEmailAsync("icondesk1@gmail.com", "pippin_mole", "google.com",
+            CancellationToken.None);
+;        
         var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
         if ( user == null ) return Page();
 

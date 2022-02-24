@@ -1,6 +1,5 @@
 using AspNetCore.Identity.Mongo.Model;
 using Helios.Helium;
-using Helios.Products;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

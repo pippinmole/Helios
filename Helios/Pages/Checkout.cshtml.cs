@@ -3,7 +3,6 @@ using Helios.Data.Users;
 using Helios.Data.Users.Extensions;
 using Helios.Helium;
 using Helios.MailService;
-using Helios.Products;
 using Helios.Products.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

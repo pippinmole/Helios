@@ -1,7 +1,6 @@
 ﻿using Helios.Data.Users;
 using Helios.Helium;
 using Helios.Helium.Helpers;
-using Helios.Helium.Schemas;
 using Microsoft.Extensions.Options;
 
 namespace Helios.Products.Services;

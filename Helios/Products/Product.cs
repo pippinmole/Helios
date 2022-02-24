@@ -1,6 +1,4 @@
-﻿using Helios.Data.Users;
-
-namespace Helios.Products;
+﻿namespace Helios.Products;
 
 public class Product {
     public string Name { get; }
