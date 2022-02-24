@@ -17,16 +17,18 @@ public class SignupVerification : PageModel {
         _notyfService = notyfService;
     }
         
-    public async Task<IActionResult> OnGetAsync(string token, string email) {
+    public async Task<IActionResult> OnGetAsync(string email, string token) {
         if ( !ModelState.IsValid ) {
             _logger.LogWarning("Model state is not valid");
             return Page();
         }
 
+        _logger.LogInformation("Token requested: {Token}", token);
+        
         var user = await _userManager.GetUserByEmailAsync(email);
         if ( user == null ) return Redirect("/");
 
-        var result = await _userManager.ConfirmEmailAsync(user, HttpUtility.UrlDecode(token));
+        var result = await _userManager.ConfirmEmailAsync(user, token);
         if ( result.Succeeded ) {
             await _userManager.SignInAsync(user, true);
 

@@ -32,14 +32,15 @@ public class SignupModel : PageModel {
         _logger.LogInformation("Created user {Username}", SignupForm.Username);
 
         if ( result.Succeeded ) {
-            var verifyToken = HttpUtility.UrlEncode(await _userManager.GenerateEmailConfirmTokenAsync(user));
+            var token = HttpUtility.UrlEncode(await _userManager.GenerateEmailConfirmTokenAsync(user));
             var callback = Url.Page("SignupVerification", new {
-                token = verifyToken,
                 email = user.Email
             });
-
-            var url = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}";
             
+            var url = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}?token={token}";
+            
+            _logger.LogInformation("Url is {Url}", url);
+
             await _mailSender.SendVerifyEmailAsync(user.Email, user.UserName, url);
             await _userManager.SignInAsync(user, SignupForm.RememberMe);
             
