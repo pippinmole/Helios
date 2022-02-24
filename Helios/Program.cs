@@ -35,7 +35,7 @@ builder.Host.UseSerilog((context, config) => {
         options.ToDatadogConfiguration(),
         logLevel: options.OverrideLogLevel ?? LogEventLevel.Verbose
     );
-}, writeToProviders: true);
+});
 
 // Add services to the container.
 builder.Services.AddRazorPages();
