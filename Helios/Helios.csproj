@@ -7,6 +7,7 @@
       <UserSecretsId>7c81cc3d-2ddb-4406-a9df-d35c406c2997</UserSecretsId>
 	  <PreserveCompilationContext>true</PreserveCompilationContext>
 	  <PreserveCompilationReferences>true</PreserveCompilationReferences>
+	  <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
   </PropertyGroup>
 
     <ItemGroup>
