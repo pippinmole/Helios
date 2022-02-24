@@ -9,7 +9,6 @@
 	  <PreserveCompilationReferences>true</PreserveCompilationReferences>
 	  
 	  <!-- This group contains project properties for RazorLight on .NET Core -->
-	  <PreserveCompilationContext>true</PreserveCompilationContext>
       <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
       <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
   </PropertyGroup>
