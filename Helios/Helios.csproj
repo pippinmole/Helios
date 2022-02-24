@@ -7,10 +7,6 @@
       <UserSecretsId>7c81cc3d-2ddb-4406-a9df-d35c406c2997</UserSecretsId>
 	  <PreserveCompilationContext>true</PreserveCompilationContext>
 	  <PreserveCompilationReferences>true</PreserveCompilationReferences>
-	  
-	  <!-- This group contains project properties for RazorLight on .NET Core -->
-      <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
-      <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
   </PropertyGroup>
 
     <ItemGroup>
@@ -18,10 +14,6 @@
       <Folder Include="Forms\Attributes" />
       <Folder Include="wwwroot\img" />
     </ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Include="Pages\**\*.cshtml" />
-	</ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="AspNetCore.Identity.Mongo" Version="8.3.3" />

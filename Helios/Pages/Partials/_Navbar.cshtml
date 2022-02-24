@@ -9,7 +9,7 @@
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                    <a class="nav-link text-dark" asp-area="" asp-page="/">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
@@ -24,17 +24,17 @@
         </div>
             
         @if ( User.IsLoggedIn() ) {
-            <a asp-area="" asp-page="/Index">
+            <a href="/">
                 <button class="btn btn-default">Dashboard</button>
             </a>
-            <a asp-page="@Url.Page("/Logout")">
+            <a href="/logout">
                 <button class="btn btn-outline-dark">Log Out</button>
             </a>
         } else {
-            <a asp-page="Login">
+            <a href="/login">
                 <button class="btn btn-default">Sign In</button>
             </a>
-            <a asp-page="Signup">
+            <a href="/signup">
                 <button class="btn btn-outline-dark">Sign Up</button>
             </a>
         }

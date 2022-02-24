@@ -46,9 +46,11 @@ public class Email {
 
     public Email WithTemplateVariables(string templateName, Dictionary<string, string> variables) {
         _data.Parameters.Add(new KeyValuePair<string, string>("template", templateName));
-        _data.Parameters.Add(new("X-Mailgun-Variables", JsonConvert.SerializeObject(variables)));
-        // _client.DefaultRequestHeaders.Add("X-Mailgun-Variables", JsonConvert.SerializeObject(variables));
 
+        foreach ( var (varKey, varValue) in variables ) {
+            _data.Parameters.Add(new($"v:{varKey}", varValue));
+        }
+        
         return this;
     }
 
