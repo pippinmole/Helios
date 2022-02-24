@@ -1,4 +1,5 @@
-﻿using AspNetCoreHero.ToastNotification.Abstractions;
+﻿using System.ComponentModel.DataAnnotations;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Helios.Data.Users;
 using Helios.Data.Users.Extensions;
 using Helios.Helium;
@@ -24,6 +25,11 @@ public class DevicesModel : DashboardModel {
         if ( !ModelState.IsValid )
             return Page();
 
+        if ( animalName.Length > 40 ) {
+            _notyfService.Warning("Animal name provided is too long");
+            return Page();
+        }
+        
         var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
         if ( user == null ) return Redirect("/");
 

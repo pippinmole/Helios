@@ -38,6 +38,8 @@
     <div class="dropdown-divider"></div>
 
     <form method="post" asp-page-handler="AddDevice">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        
         <div class="input-group mb-3">
             <input name="animalName" type="text" class="form-control" placeholder="Elegant Midnight Kestrel" aria-label="Elegant Midnight Kestrel" aria-describedby="button-addon2">
             <button class="btn btn-success" type="submit" id="button-addon2">

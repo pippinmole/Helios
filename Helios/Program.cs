@@ -52,14 +52,6 @@ builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(M
 builder.Services.Configure<PaypalOptions>(builder.Configuration.GetSection(PaypalOptions.Name));
 builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
 
-// var mailgunOptions = new MailSenderOptions();
-// builder.Configuration.GetSection(MailSenderOptions.Name).Bind(mailgunOptions);
-
-// builder.Services
-//     .AddFluentEmail($"{mailgunOptions.FromName}@{mailgunOptions.Domain}", "Helios")
-//     .AddRazorRenderer()
-//     .AddMailGunSender(mailgunOptions.Domain, mailgunOptions.ApiKey, MailGunRegion.EU);
-
 builder.Services.AddRecaptcha(builder.Configuration.GetSection("RecaptchaSettings"));
 builder.Services.AddSingleton<IDatabaseContext, DatabaseContext>();
 builder.Services.AddSingleton<IPaypalDatabase, PaypalDatabase>();
