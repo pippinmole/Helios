@@ -39,8 +39,7 @@ builder.Host.UseSerilog((context, config) => {
 }, writeToProviders: true);
 
 // Add services to the container.
-builder.Services.AddRazorPages()
-    .AddRazorRuntimeCompilation();
+builder.Services.AddRazorPages();
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -54,8 +53,6 @@ builder.Services.Configure<PaypalOptions>(builder.Configuration.GetSection(Paypa
 
 var mailgunOptions = new MailSenderOptions();
 builder.Configuration.GetSection(MailSenderOptions.Name).Bind(mailgunOptions);
-
-Console.WriteLine(Path.Combine(builder.Environment.ContentRootPath, "Email Templates"));
 
 builder.Services
     .AddFluentEmail($"{mailgunOptions.FromName}@{mailgunOptions.Domain}", "Helios")
@@ -80,11 +77,6 @@ builder.Services.AddCronJob<UptimeCronJob>(options => {
     options.CronExpression = "0 0/5 * 1/1 * ?";
     options.TimeZoneInfo = TimeZoneInfo.Local;
 });
-
-// builder.Services.AddCronJob<TestCronJob>(options => {
-//     options.CronExpression = "*/5 * * * * *";
-//     options.TimeZoneInfo = TimeZoneInfo.Local;
-// });
 
 builder.Services.AddIdentityMongoDbProvider<ApplicationUser, ApplicationRole, ObjectId>(
         identity => {

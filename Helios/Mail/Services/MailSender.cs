@@ -1,10 +1,7 @@
-using System.Web;
 using FluentEmail.Core;
 using FluentEmail.Razor;
-using Helios.Email_Templates;
+using Helios.Pages;
 using Helios.Products;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Helios.MailService;
 
@@ -13,7 +10,7 @@ public class MailSender : IMailSender {
     private readonly ILogger<MailSender> _logger;
     private readonly IFluentEmailFactory _emailFactory;
 
-    private string Root => Path.Combine(Directory.GetCurrentDirectory(), "Email Templates");
+    private string Root => Path.Combine(Directory.GetCurrentDirectory(), "Pages", "Email Templates");
 
     public MailSender(ILogger<MailSender> logger, IFluentEmailFactory emailFactory) {
         _logger = logger;
@@ -29,7 +26,7 @@ public class MailSender : IMailSender {
                 Username = username,
                 VerifyUrl = verifyUrl
             });
-
+        
         var response = await email.SendAsync(token).ConfigureAwait(false);
         if ( response.Successful ) {
             _logger.LogInformation("Successfully sent verify email: {Response}", response.Successful);
@@ -42,10 +39,6 @@ public class MailSender : IMailSender {
 
     public async Task SendResetPasswordAsync(string address, string username, string resetUrl,
         CancellationToken? token = null) {
-        
-        var test = _emailFactory.Create();
-        _logger.LogInformation("isValid: {IsValid}", test.Renderer.GetType() == typeof(RazorRenderer));
-        
         var email = _emailFactory.Create()
             .To(address)
             .Subject("Password Reset")
@@ -53,7 +46,7 @@ public class MailSender : IMailSender {
                 Username = username,
                 ResetUrl = resetUrl
             });
-
+        
         var response = await email.SendAsync(token).ConfigureAwait(false);
         if ( response.Successful ) {
             _logger.LogInformation("Successfully sent password reset email: {Response}", response.Successful);

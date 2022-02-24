@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Helios.Email_Templates; 
+namespace Helios.Pages; 
 
 public class VerifyEmailModel : PageModel {
     

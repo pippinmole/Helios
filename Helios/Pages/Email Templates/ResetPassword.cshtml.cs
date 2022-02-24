@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Helios.Email_Templates; 
+namespace Helios.Pages; 
 
 public class ResetPasswordEmailModel : PageModel {
     public string Username { get; set; }

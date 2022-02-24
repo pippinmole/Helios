@@ -7,7 +7,6 @@
       <UserSecretsId>7c81cc3d-2ddb-4406-a9df-d35c406c2997</UserSecretsId>
 	  <PreserveCompilationContext>true</PreserveCompilationContext>
 	  <PreserveCompilationReferences>true</PreserveCompilationReferences>
-	  <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
   </PropertyGroup>
 
     <ItemGroup>
@@ -28,7 +27,6 @@
       <PackageReference Include="FluentEmail.Razor" Version="3.0.0" />
       <PackageReference Include="Humanizer" Version="2.14.1" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.2" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.2" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="PayPalCheckoutSdk" Version="1.0.4" />
       <PackageReference Include="RazorLight" Version="2.0.0-rc.6" />
@@ -89,30 +87,8 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\dist\jquery.validate.js" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\dist\jquery.validate.min.js" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\LICENSE.md" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Update="EmailTemplates\ResetPassword.cshtml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <Content Update="EmailTemplates\VerifyEmail.cshtml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <Content Update="Email Templates\ResetPassword.cshtml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <Content Update="Email Templates\VerifyEmail.cshtml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Email Templates\ResetPassword.cshtml.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
-      <Compile Update="Email Templates\VerifyEmail.cshtml.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Compile>
+      <_ContentIncludedByDefault Remove="Email Templates\ResetPassword.cshtml" />
+      <_ContentIncludedByDefault Remove="Email Templates\VerifyEmail.cshtml" />
     </ItemGroup>
 
 </Project>
