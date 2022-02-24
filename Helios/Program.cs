@@ -1,7 +1,6 @@
 using AspNetCore.Identity.Mongo;
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
-using FluentEmail.Mailgun;
 using Helios.Core;
 using Helios.Data.Users;
 using Helios.Database;
@@ -39,11 +38,11 @@ builder.Host.UseSerilog((context, config) => {
 }, writeToProviders: true);
 
 // Add services to the container.
-builder.Services.AddRazorPages()
-    .AddRazorRuntimeCompilation();
+builder.Services.AddRazorPages();
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddHttpClient();
 
 builder.Services.AddDataProtection();
 builder.Services.AddAntiforgery();
@@ -51,14 +50,15 @@ builder.Services.AddAntiforgery();
 builder.Services.Configure<HeliumOptions>(builder.Configuration.GetSection(HeliumOptions.Name));
 builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
 builder.Services.Configure<PaypalOptions>(builder.Configuration.GetSection(PaypalOptions.Name));
+builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
 
-var mailgunOptions = new MailSenderOptions();
-builder.Configuration.GetSection(MailSenderOptions.Name).Bind(mailgunOptions);
+// var mailgunOptions = new MailSenderOptions();
+// builder.Configuration.GetSection(MailSenderOptions.Name).Bind(mailgunOptions);
 
-builder.Services
-    .AddFluentEmail($"{mailgunOptions.FromName}@{mailgunOptions.Domain}", "Helios")
-    .AddRazorRenderer()
-    .AddMailGunSender(mailgunOptions.Domain, mailgunOptions.ApiKey, MailGunRegion.EU);
+// builder.Services
+//     .AddFluentEmail($"{mailgunOptions.FromName}@{mailgunOptions.Domain}", "Helios")
+//     .AddRazorRenderer()
+//     .AddMailGunSender(mailgunOptions.Domain, mailgunOptions.ApiKey, MailGunRegion.EU);
 
 builder.Services.AddRecaptcha(builder.Configuration.GetSection("RecaptchaSettings"));
 builder.Services.AddSingleton<IDatabaseContext, DatabaseContext>();

@@ -1,6 +1,4 @@
 ﻿using System.Web;
-using FluentEmail.Core;
-using FluentEmail.Mailgun;
 using Helios.Data.Users;
 using Helios.Forms;
 using Helios.MailService;

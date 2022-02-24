@@ -6,11 +6,8 @@ using Helios.Paypal;
 using Helios.Products;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
-using Newtonsoft.Json;
 using PayPalCheckoutSdk.Orders;
 using PayPalCheckoutSdk.Core;
-using HttpResponse = PayPalHttp.HttpResponse;
 
 namespace Helios.Controllers;
 

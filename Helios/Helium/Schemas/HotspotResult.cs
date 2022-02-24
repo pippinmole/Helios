@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace Helios.Helium.Schemas;
+﻿namespace Helios.Helium.Schemas;
 
 public class Status {
     public DateTime timestamp { get; set; }

@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Helios.Helium.Helpers;
+﻿using Helios.Helium.Helpers;
 using Helios.Helium.Schemas;
 using Newtonsoft.Json;
 

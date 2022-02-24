@@ -1,7 +1,5 @@
 ﻿using System.Security.Claims;
 using Helios.Products;
-using Humanizer;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Bson;
 
 namespace Helios.Data.Users.Extensions; 
