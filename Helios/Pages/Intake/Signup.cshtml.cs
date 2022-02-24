@@ -39,15 +39,8 @@ public class SignupModel : PageModel {
             });
 
             var url = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}";
-            await _mailSender.SendVerifyEmailAsync(user.Email, user.UserName, url);
             
-            // await _mailSender.SendEmailAsync(
-            //     user.Email,
-            //     "Account verification",
-            //     $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}",
-            //     null
-            // );
-
+            await _mailSender.SendVerifyEmailAsync(user.Email, user.UserName, url);
             await _userManager.SignInAsync(user, SignupForm.RememberMe);
             
             return Redirect("/");

@@ -1,4 +1,4 @@
-@page
+@page "/verify/{token}/{email}"
 @model SignupVerification
 
 @foreach ( var error in ViewData.ModelState.Values.SelectMany(modelState => modelState.Errors) ) {

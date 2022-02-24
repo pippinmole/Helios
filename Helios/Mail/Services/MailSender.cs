@@ -30,7 +30,7 @@ public class MailSender : IMailSender {
             .To(address)
             .Subject("Verify your email")
             .WithTemplateVariables("verify-email", new Dictionary<string, string> {
-                { "user_name", username },
+                { "username", username },
                 { "verify_url", verifyUrl }
             });
         
@@ -47,8 +47,8 @@ public class MailSender : IMailSender {
         var email = Create()
             .To(address)
             .Subject("Password Reset")
-            .WithTemplateVariables("password-reset", new Dictionary<string, string> {
-                { "user_name", username },
+            .WithTemplateVariables("reset-password", new Dictionary<string, string> {
+                { "username", username },
                 { "reset_url", resetUrl }
             });
 
