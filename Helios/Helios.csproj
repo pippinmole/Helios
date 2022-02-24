@@ -7,13 +7,11 @@
       <UserSecretsId>7c81cc3d-2ddb-4406-a9df-d35c406c2997</UserSecretsId>
 	  <PreserveCompilationContext>true</PreserveCompilationContext>
 	  <PreserveCompilationReferences>true</PreserveCompilationReferences>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <!-- This group contains project properties for RazorLight on .NET Core -->
-    <PreserveCompilationContext>true</PreserveCompilationContext>
-    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
-    <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
+	  
+	  <!-- This group contains project properties for RazorLight on .NET Core -->
+	  <PreserveCompilationContext>true</PreserveCompilationContext>
+      <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
+      <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
   </PropertyGroup>
 
     <ItemGroup>
