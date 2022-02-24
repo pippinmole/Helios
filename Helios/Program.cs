@@ -40,7 +40,6 @@ builder.Host.UseSerilog((context, config) => {
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddControllers().AddNewtonsoftJson();
-builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddHttpClient();
 
