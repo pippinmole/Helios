@@ -25,13 +25,12 @@ public class LoginModel : PageModel {
         var result = await _signInManager.PasswordSignInAsync(LoginForm.Username, LoginForm.Password,
             LoginForm.RememberMe, false);
 
-        if ( !result.Succeeded ) {
-            _logger.LogWarning("Login attempt failed");
-            ModelState.AddModelError("", "Login failed. Please check the credentials and try again.");
+        if ( result.Succeeded ) return Redirect("/");
+        
+        _logger.LogDebug("Login attempt failed");
+        ModelState.AddModelError("", "Login failed. Please check the credentials and try again.");
 
-            return Page();
-        }
+        return Page();
 
-        return Redirect("/");
     }
 }
