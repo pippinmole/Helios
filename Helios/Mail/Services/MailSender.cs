@@ -13,7 +13,7 @@ public class MailSender : IMailSender {
     private readonly ILogger<MailSender> _logger;
     private readonly IFluentEmailFactory _emailFactory;
 
-    private string Root => Path.Combine(Directory.GetCurrentDirectory(), "EmailTemplates");
+    private string Root => Path.Combine(Directory.GetCurrentDirectory(), "Email Templates");
 
     public MailSender(ILogger<MailSender> logger, IFluentEmailFactory emailFactory) {
         _logger = logger;

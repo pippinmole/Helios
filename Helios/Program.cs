@@ -58,7 +58,7 @@ Console.WriteLine(Path.Combine(builder.Environment.ContentRootPath, "Email Templ
 
 builder.Services
     .AddFluentEmail($"{mailgunOptions.FromName}@{mailgunOptions.Domain}", "Helios")
-    .AddRazorRenderer(Path.Combine(builder.Environment.ContentRootPath, "EmailTemplates"))
+    .AddRazorRenderer()
     .AddMailGunSender(mailgunOptions.Domain, mailgunOptions.ApiKey, MailGunRegion.EU);
 
 builder.Services.AddRecaptcha(builder.Configuration.GetSection("RecaptchaSettings"));
