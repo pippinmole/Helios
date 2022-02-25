@@ -20,6 +20,9 @@ public class LoginModel : PageModel {
     }
         
     public async Task<IActionResult> OnPost() {
+        if ( !ModelState.IsValid )
+            return Page();
+        
         _logger.LogInformation("Login attempt for {Username}", LoginForm.Username);
 
         var result = await _signInManager.PasswordSignInAsync(LoginForm.Username, LoginForm.Password,
