@@ -1,9 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
-using FluentEmail.Mailgun;
 using Helios.Mail.Extensions;
 using Helios.MailService;
-using Newtonsoft.Json;
 
 namespace Helios.Mail; 
 
@@ -30,17 +28,12 @@ public class Email {
     }
 
     public Email To(string address) {
-        // _data.ToAddress = address;
         _data.Parameters.Add(new KeyValuePair<string, string>("to", $"to <{address}>"));
-        // _client.DefaultRequestHeaders.Add("to", address);
         return this;
     }
     
     public Email Subject(string subject) {
         _data.Parameters.Add(new KeyValuePair<string, string>("subject", subject));
-        
-        // _data.Subject = subject;
-        // _client.DefaultRequestHeaders.Add("subject", subject);
         return this;
     }
 
@@ -48,29 +41,23 @@ public class Email {
         _data.Parameters.Add(new KeyValuePair<string, string>("template", templateName));
 
         foreach ( var (varKey, varValue) in variables ) {
-            _data.Parameters.Add(new($"v:{varKey}", varValue));
+            _data.Parameters.Add(new KeyValuePair<string, string>($"v:{varKey}", varValue));
         }
         
         return this;
     }
 
     public Email Body(string body) {
-        // _data.Body = body;
         _data.Parameters.Add(new KeyValuePair<string, string>("text", body));
-        // _client.DefaultRequestHeaders.Add("body", body);
         return this;
     }
     
     private Email From() {
-        // parameters.Add(new KeyValuePair<string, string>("from", $"{email.Data.FromAddress.Name} <{email.Data.FromAddress.EmailAddress}>"));
-        
         _data.Parameters.Add(new KeyValuePair<string, string>("from", $"{_options.FromName} <{_options.FromName}@{_options.Domain}>"));
-        // _data.FromAddress = address;
-        // _client.DefaultRequestHeaders.Add("to", address);
         return this;
     }
 
     public Task<HttpResponseMessage> SendAsync(CancellationToken cancellationToken = default) {
-        return _client.PostMultipart<HttpResponseMessage>(_url + "/messages", _data.Parameters, null, cancellationToken);
+        return _client.PostMultipart<HttpResponseMessage>(_url + "/messages", _data.Parameters, cancellationToken);
     }
 }

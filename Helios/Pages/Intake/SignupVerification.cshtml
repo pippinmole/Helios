@@ -4,12 +4,3 @@
 @foreach ( var error in ViewData.ModelState.Values.SelectMany(modelState => modelState.Errors) ) {
     <p>@(error.Exception + ": " + error.ErrorMessage)</p>
 }
-
-@* @section Scripts { *@
-@*     <script> *@
-@*         window.addEventListener("load", function(){ *@
-@*             window.close(); *@
-@*         }); *@
-@*     </script> *@
-@* *@
-@* } *@

@@ -1,4 +1,3 @@
-using System.Web;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Helios.Data.Users;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +17,8 @@ public class SignupVerification : PageModel {
     }
         
     public async Task<IActionResult> OnGetAsync(string email, string token) {
-        if ( !ModelState.IsValid ) {
-            _logger.LogWarning("Model state is not valid");
-            return Page();
-        }
+        if ( !ModelState.IsValid ) return Page();
 
-        _logger.LogInformation("Token requested: {Token}", token);
-        
         var user = await _userManager.GetUserByEmailAsync(email);
         if ( user == null ) return Redirect("/");
 
@@ -35,7 +29,6 @@ public class SignupVerification : PageModel {
             _notyfService.Success("Email successfully verified!");
         } else {
             foreach ( var error in result.Errors ) {
-                _logger.LogWarning(error.Code + " : " + error.Description);
                 ModelState.AddModelError(error.Code, error.Description);
             }
             

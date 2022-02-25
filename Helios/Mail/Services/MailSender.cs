@@ -38,7 +38,7 @@ public class MailSender : IMailSender {
         if ( response.IsSuccessStatusCode ) {
             _logger.LogInformation("Successfully sent verify email");
         } else {
-            _logger.LogError("Failed to send email verification email: Error code {ErrorCode}", response.StatusCode);
+            _logger.LogCritical("Failed to send email verification email: Error code {ErrorCode}", response.StatusCode);
         }
     }
 
@@ -56,7 +56,7 @@ public class MailSender : IMailSender {
         if ( response.IsSuccessStatusCode ) {
             _logger.LogInformation("Successfully sent password reset email");
         } else {
-            _logger.LogError("Failed to send password reset email: Error code {ErrorCode}", response.StatusCode);
+            _logger.LogCritical("Failed to send password reset email: Error code {ErrorCode}", response.StatusCode);
         }
     }
 
@@ -75,7 +75,7 @@ public class MailSender : IMailSender {
         if ( response.IsSuccessStatusCode ) {
             _logger.LogInformation("Successfully sent service down email");
         } else {
-            _logger.LogError("Failed to send service down email: Error code {ErrorCode}", response.StatusCode);
+            _logger.LogCritical("Failed to send service down email: Error code {ErrorCode}", response.StatusCode);
         }
     }
 }

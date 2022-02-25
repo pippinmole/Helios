@@ -20,7 +20,6 @@ builder.Host.SetupDatadogLogging();
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddControllers().AddNewtonsoftJson();
-builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddHttpClient();
 
@@ -93,10 +92,5 @@ app.UseEndpoints(endpoints => {
     endpoints.MapRazorPages();
     endpoints.MapControllers();
 });
-
-if ( app.Environment.IsDevelopment() ) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.Run();

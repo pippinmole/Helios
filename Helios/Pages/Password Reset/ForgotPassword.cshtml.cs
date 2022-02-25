@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Web;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Helios.Data.Users;
 using Helios.MailService;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +12,15 @@ public class ForgotPasswordModel : PageModel {
     private readonly ILogger<ForgotPasswordModel> _logger;
     private readonly IMailSender _mailSender;
     private readonly IAppUserManager _userManager;
+    private readonly INotyfService _notyfService;
 
     [BindProperty] public ForgotPasswordForm Form { get; set; }
 
-    public ForgotPasswordModel(ILogger<ForgotPasswordModel> logger, IMailSender mailSender, IAppUserManager userManager) {
+    public ForgotPasswordModel(ILogger<ForgotPasswordModel> logger, IMailSender mailSender, IAppUserManager userManager, INotyfService notyfService) {
         _logger = logger;
         _mailSender = mailSender;
         _userManager = userManager;
+        _notyfService = notyfService;
     }
 
     public async Task<IActionResult> OnPostAsync() {
@@ -30,8 +33,7 @@ public class ForgotPasswordModel : PageModel {
             return Page();
         }
 
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var urlToken = HttpUtility.UrlEncode(token);
+        var token = HttpUtility.UrlEncode(await _userManager.GeneratePasswordResetTokenAsync(user));
         var callback = Url.Page("ResetPassword", new {
             email = form.Email
         });
@@ -39,8 +41,10 @@ public class ForgotPasswordModel : PageModel {
         await _mailSender.SendResetPasswordAsync(
             form.Email,
             user.UserName,
-            $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}?token={urlToken}");
+            $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}?token={token}");
 
+        _notyfService.Success("Please check your email to reset your password");
+        
         return LocalRedirect("/");
     }
 

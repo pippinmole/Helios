@@ -45,13 +45,12 @@ public class SignupModel : PageModel {
             await _userManager.SignInAsync(user, SignupForm.RememberMe);
             
             return Redirect("/");
-        } else {
-            foreach ( var error in result.Errors ) {
-                ModelState.AddModelError(error.Code, error.Description);
-                _logger.LogWarning("Error creating user account: {Description}", error.Description);
-            }
-
-            return Page();
         }
+
+        foreach ( var error in result.Errors ) {
+            ModelState.AddModelError(error.Code, error.Description);
+        }
+
+        return Page();
     }
 }
