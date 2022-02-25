@@ -31,22 +31,32 @@
     var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
 }
 
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">Add new device</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form method="post" asp-page-handler="AddDevice">
+            <div asp-validation-summary="All" class="text-danger"></div>
+                
+            <label for="inputAnimalName1" class="form-label small">Animal Name</label>
+            <input type="text" name="animalName" class="form-control" id="inputAnimalName1" aria-describedby="animalHelp" placeholder="Elegant Midnight Kestrel"/>
+                            
+            <button class="btn btn-success mt-3" type="submit">
+                Add new device
+            </button>
+        </form>
+
+    </div>
+</div>
+
 <h2 class="text-center">Devices</h2>
 
 <div style="width: 65%;" class="m-auto">
-    <h4 class="text-left">Add new device</h4>
-    <div class="dropdown-divider"></div>
+    @* <h4 class="text-left">Add new device</h4> *@
+    @* <div class="dropdown-divider"></div> *@
 
-    <form method="post" asp-page-handler="AddDevice">
-        <div asp-validation-summary="All" class="text-danger"></div>
-        
-        <div class="input-group mb-3">
-            <input name="animalName" type="text" class="form-control" placeholder="Elegant Midnight Kestrel" aria-label="Elegant Midnight Kestrel" aria-describedby="button-addon2">
-            <button class="btn btn-success" type="submit" id="button-addon2">
-                + Add new device
-            </button>
-        </div>
-    </form>
 
     @{
         var deviceCount = user.Devices.Count;
@@ -61,6 +71,10 @@
         
             <a href="@Url.Page("/pricing")">Upgrade Now</a>
         </span>
+        
+        <button class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+            +
+        </button>
     </h4>
 
     <div class="dropdown-divider"></div>
