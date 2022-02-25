@@ -17,7 +17,10 @@
                 <h4 class="my-0 fw-normal">Free</h4>
             </div>
             <div class="card-body">
-                <h1 class="card-title pricing-card-title">0 HNT<small class="text-muted fw-light">/mo</small></h1>
+                <h1 class="card-title pricing-card-title">
+                    0 HNT
+                    <small class="text-muted fw-light">/mo</small>
+                </h1>
                 <ul class="list-unstyled mt-3 mb-4">
                     <li><i class="bi bi-check"></i> Up to 1 device</li>
                     <li><i class="bi bi-check"></i> Uptime check every 1 hour</li>
@@ -45,7 +48,8 @@
                 <ul class="list-unstyled mt-3 mb-4">
                     <li><i class="bi bi-check"></i> Up to 5 devices</li>
                     <li><i class="bi bi-check"></i> Uptime check every 30 minutes</li>
-                    <li><i class="bi bi-check"></i> Email + SMS notifications</li>
+                    <li><i class="bi bi-check"></i> Email notifications</li>
+                    @* <li><i class="bi bi-check"></i> Email + SMS notifications</li> *@
                 </ul>
                 
                 @if ( User.IsLoggedIn() ) {
@@ -70,7 +74,8 @@
                 <ul class="list-unstyled mt-3 mb-4">
                     <li><i class="bi bi-check"></i> Unlimited devices</li>
                     <li><i class="bi bi-check"></i> Uptime check every 5 minutes</li>
-                    <li><i class="bi bi-check"></i> Email + SMS notifications</li>
+                    <li><i class="bi bi-check"></i> Email notifications</li>
+                    @* <li><i class="bi bi-check"></i> Email + SMS notifications</li> *@
                 </ul>
                 
                 @if ( User.IsLoggedIn() ) {
@@ -82,7 +87,11 @@
                         <button type="button" class="w-100 btn btn-lg btn-primary">Get started</button>
                     </a>
                 }
-                </div>
+            </div>
         </div>
     </div>
+</div>
+
+<div class="alert alert-warning" role="alert">
+    <strong>Please note:</strong> We will be adding support for SMS notifications in the future, which will be available for all Pro and Enterprise plans.
 </div>

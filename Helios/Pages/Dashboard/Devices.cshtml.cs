@@ -1,4 +1,5 @@
-﻿using AspNetCoreHero.ToastNotification.Abstractions;
+﻿using System.ComponentModel.DataAnnotations;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Helios.Data.Users;
 using Helios.Data.Users.Extensions;
 using Helios.Helium;
@@ -24,6 +25,16 @@ public class DevicesModel : DashboardModel {
         if ( !ModelState.IsValid )
             return Page();
 
+        if ( string.IsNullOrEmpty(animalName) ) {
+            _notyfService.Warning("Please provide a device name");
+            return Page();
+        }
+        
+        if ( animalName.Length > 40 ) {
+            _notyfService.Warning("Animal name provided is too long");
+            return Page();
+        }
+        
         var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
         if ( user == null ) return Redirect("/");
 
@@ -52,6 +63,8 @@ public class DevicesModel : DashboardModel {
         _logger.LogInformation("Added device with name: {Name}", animalName);
         
         await _userManager.UpdateUserAsync(user);
+
+        _notyfService.Success("Added device successfully");
 
         return Page();
     }

@@ -16,12 +16,8 @@ public class LogoutModel : PageModel {
     }
         
     public async Task<IActionResult> OnGetAsync() {
-        _logger.LogInformation($"Signout request");
-            
-        if ( User != null ) {
-            _logger.LogInformation($"Signout request from {User.GetDisplayName()}");
-            await _signInManager.SignOutAsync();
-        }
+        _logger.LogInformation("Sign out request from {Username}", User.GetDisplayName());
+        await _signInManager.SignOutAsync();
 
         return RedirectToPage("/Index");
     }
