@@ -54,10 +54,6 @@
 <h2 class="text-center">Devices</h2>
 
 <div style="width: 65%;" class="m-auto">
-    @* <h4 class="text-left">Add new device</h4> *@
-    @* <div class="dropdown-divider"></div> *@
-
-
     @{
         var deviceCount = user.Devices.Count;
         var maxDevices = user.AccountType.MaxDevicesAllowed();
@@ -66,11 +62,17 @@
     <h4 class="mt-5">
         Your devices
     
-        <span class="text-muted fs-6">
-            @deviceCount out of @maxDevices device slots used
-        
-            <a href="@Url.Page("/pricing")">Upgrade Now</a>
-        </span>
+        @if ( user.AccountType == EAccountType.Enterprise ) {
+            <span class="text-muted fs-6">
+                @deviceCount devices
+            </span>
+        } else {
+            <span class="text-muted fs-6">
+                @deviceCount out of @maxDevices device slots used
+
+                <a href="@Url.Page("/pricing")">Upgrade Now</a>
+            </span>
+        }
         
         <button class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
             +
@@ -111,6 +113,10 @@
                             <small class="text-muted">
                                 Updated @UppercaseFirst(device.TimeSinceLastReport().Humanize(minUnit: TimeUnit.Second)) ago
                             </small>
+                            
+                            @* <span class="badge rounded-pill bg-success">Success</span> *@
+                            @* <span class="badge rounded-pill bg-success">Success</span> *@
+                            @* <span class="badge rounded-pill bg-success">Success</span> *@
                         </span>
                     </button>
                 </h2>
@@ -119,9 +125,9 @@
                         <ul class="list-group list-group-flush">
 
                             @* Uptime *@
-                            <li class="list-group-item">
-                                <strong>Uptime: </strong> IMPLEMENT
-                            </li>
+                            @* <li class="list-group-item"> *@
+                            @*     <strong>Uptime: </strong> IMPLEMENT *@
+                            @* </li> *@
 
                             @* Explorer page *@
                             <li class="list-group-item">

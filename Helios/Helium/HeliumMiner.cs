@@ -16,11 +16,9 @@ public class HeliumMiner {
         UpdateReport(report);
     }
 
-    public HeliumMiner UpdateReport(HotspotReport report) {
+    public void UpdateReport(HotspotReport report) {
         LastReport = report;
         LastReportDate = DateTime.Now;
-
-        return this;
     }
     
     public TimeSpan TimeSinceLastReport() => DateTime.Now - LastReportDate;

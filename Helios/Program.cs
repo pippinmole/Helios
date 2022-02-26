@@ -46,7 +46,8 @@ builder.Services.AddNotyf(config => {
 });
 
 builder.Services.AddCronJob<UptimeCronJob>(options => {
-    options.CronExpression = "0 0/5 * 1/1 * ?";
+    // options.CronExpression = "0 0/5 * 1/1 * ?";
+    options.CronExpression = "*/2 * * * * *";
     options.TimeZoneInfo = TimeZoneInfo.Local;
 });
 

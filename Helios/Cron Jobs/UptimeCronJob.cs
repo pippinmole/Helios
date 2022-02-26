@@ -1,4 +1,5 @@
 ﻿using Helios.Data.Users;
+using Helios.Data.Users.Extensions;
 using Helios.Helium;
 using Helios.MailService;
 using Microsoft.Extensions.Options;
@@ -26,11 +27,6 @@ public class UptimeCronJob : CronJobService {
         var userService = scope.ServiceProvider.GetRequiredService<IAppUserManager>();
         var mailService = scope.ServiceProvider.GetRequiredService<IMailSender>();
 
-        // var users = userService.GetUsersWhere(x => x.Roles.Contains("Paid"));
-
-        // TODO: Remove this
-        // var users = userService.GetUsersInRoleAsync("");
-
         var users = userService.GetUsersWhere(x => true);
 
         foreach ( var user in users ) {
@@ -40,8 +36,14 @@ public class UptimeCronJob : CronJobService {
         }
     }
 
-    private async Task UpdateDeviceData(ApplicationUser user, IMailSender mailSender, CancellationToken cancellationToken) {
+    private async Task UpdateDeviceData(ApplicationUser user, IMailSender mailSender,
+        CancellationToken cancellationToken) {
+        
+        if ( !user.CanUpdateDevices() )
+            return;
+
         user.Devices ??= new List<HeliumMiner>();
+        user.LastDeviceUpdate = DateTime.Now;
 
         foreach ( var device in user.Devices ) {
             var report = await _heliumService.GetHotspotByAnimalName(device.AnimalName);

@@ -16,7 +16,8 @@ public class ForgotPasswordModel : PageModel {
 
     [BindProperty] public ForgotPasswordForm Form { get; set; }
 
-    public ForgotPasswordModel(ILogger<ForgotPasswordModel> logger, IMailSender mailSender, IAppUserManager userManager, INotyfService notyfService) {
+    public ForgotPasswordModel(ILogger<ForgotPasswordModel> logger, IMailSender mailSender, IAppUserManager userManager,
+        INotyfService notyfService) {
         _logger = logger;
         _mailSender = mailSender;
         _userManager = userManager;
@@ -46,11 +47,7 @@ public class ForgotPasswordModel : PageModel {
         }
 
         _notyfService.Success("Please check your email to reset your password");
-        
-        return LocalRedirect("/");
-    }
 
-    public IActionResult OnGet(string email, string token) {
-        return Page();
+        return LocalRedirect("/");
     }
 }

@@ -35,6 +35,26 @@ public static class AppUserExtensions {
         };
     }
 
+    public static TimeSpan DeviceUpdateRate(this ApplicationUser user) {
+        return user.AccountType switch {
+            EAccountType.Free =>  TimeSpan.FromMinutes(60),
+            EAccountType.Pro => TimeSpan.FromMinutes(30),
+            EAccountType.Enterprise =>  TimeSpan.FromMinutes(5),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+    
+    public static TimeSpan TimeSinceDevicesUpdated(this ApplicationUser user) {
+        return DateTime.Now - user.LastDeviceUpdate;
+    }
+
+    public static bool CanUpdateDevices(this ApplicationUser user) {
+        var timeSinceLastUpdate = user.TimeSinceDevicesUpdated();
+        var updateRate = user.DeviceUpdateRate();
+
+        return timeSinceLastUpdate >= updateRate;
+    }
+    
     public static string GenerateMemoForProduct(this ApplicationUser user, Product product) {
         var str = "";
 
