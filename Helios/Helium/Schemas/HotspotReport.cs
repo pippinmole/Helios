@@ -49,6 +49,8 @@ public class HotspotReport {
     public int block_added { get; set; }
     public int block { get; set; }
     public string address { get; set; }
+
+    public float GainDb => gain / 10f;
 }
 
 public class HotspotResult {

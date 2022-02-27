@@ -26,9 +26,8 @@ public class UptimeCronJob : CronJobService {
         var scope = _serviceProvider.CreateScope();
         var userService = scope.ServiceProvider.GetRequiredService<IAppUserManager>();
         var mailService = scope.ServiceProvider.GetRequiredService<IMailSender>();
-
+        
         var users = userService.GetUsersWhere(x => true);
-
         foreach ( var user in users ) {
             await UpdateDeviceData(user, mailService, cancellationToken);
 
@@ -47,13 +46,12 @@ public class UptimeCronJob : CronJobService {
 
         foreach ( var device in user.Devices ) {
             var report = await _heliumService.GetHotspotByAnimalName(device.AnimalName);
+            
             device.UpdateReport(report);
         }
 
-        if ( user.Devices.Any(x => x != null && !x.LastReport.status.IsOnline) ) {
+        if ( user.Devices.Any(x => x != null && x.LastReport != null && !x.LastReport.status.IsOnline) ) {
             if ( !user.CanSendEmail() ) return;
-
-            _logger.LogInformation("Sending downtime email to {Username}", user.UserName);
 
             // Send downtime notification
             user.LastEmailDate = DateTime.Now;
