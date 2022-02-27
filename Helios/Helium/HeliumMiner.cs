@@ -1,7 +1,9 @@
 ﻿using Helios.Helium.Schemas;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Helios.Helium; 
 
+[BsonIgnoreExtraElements]
 public class HeliumMiner {
 
     public Guid Id { get; set; }
