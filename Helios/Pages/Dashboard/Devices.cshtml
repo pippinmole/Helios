@@ -28,6 +28,14 @@
             };
     }
 
+    string RewardScaleStyle(double scale) {
+        return scale switch {
+            > 0.9f => "bg-success",
+            > 0.35f => "bg-warning",
+            _ => "bg-danger"
+            };
+    }
+
     var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
 }
 
@@ -123,9 +131,9 @@
                             <span class="badge rounded-pill bg-success" 
                                   data-toggle="tooltip" data-placement="top" title="Current block synced on device"
                             >Block @device.LastReport.block</span>
-                            <span class="badge rounded-pill bg-success"
+                            <span class="badge rounded-pill @RewardScaleStyle(device.LastReport.reward_scale)"
                                   @* data-bs-toggle="tooltip" data-bs-placement="top" title="Reward scale" *@
-                            >Reward Scale @device.LastReport.reward_scale</span>
+                            >Reward Scale @device.LastReport.reward_scale.ToString("N2")</span>
                             @* <span class="badge rounded-pill bg-success">Success</span> *@
                         </span>
                     </button>
@@ -141,7 +149,13 @@
                                     @if ( device.LastReport == null ) {
                                         @:Unknown
                                     } else {
-                                        @foreach ( var ip in device.LastReport.status.GetListenAddresses() ) {
+                                        var listenAddresses = device.LastReport.status.GetListenAddresses().ToList();
+                                        
+                                        if(listenAddresses.Count == 0) {
+                                            <span class="text-danger">Not found - Device is either relayed or new to the blockchain</span>
+                                        }
+                                        
+                                        @foreach ( var ip in listenAddresses ) {
                                             @ip
                                         }
                                     }
