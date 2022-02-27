@@ -12,6 +12,7 @@ public sealed class ApplicationUser : MongoUser<ObjectId> {
     public TimeSpan DowntimeNotifyRate { get; set; } = TimeSpan.FromMinutes(30);
     public bool ReceiveEmails { get; set; } = true;
     public DateTime LastEmailDate { get; set; }
+    public DateTime LastDeviceUpdate { get; set; }
     public List<string> PreviousOrderHashes { get; set; } = new();
 
     public ApplicationUser() : base() { }

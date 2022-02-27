@@ -11,6 +11,8 @@
 @inject IOptions<HeliumOptions> _heliumOptions
 
 @{
+    ViewData["Title"] = "Checkout";
+    
     var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
     var cart = Product.Tiers[int.Parse(HttpContext.Request.RouteValues["id"].ToString())];
 

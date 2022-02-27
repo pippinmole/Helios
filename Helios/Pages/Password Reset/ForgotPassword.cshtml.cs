@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Web;
+﻿using System.Web;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Helios.Data.Users;
+using Helios.Forms;
 using Helios.MailService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,7 +16,8 @@ public class ForgotPasswordModel : PageModel {
 
     [BindProperty] public ForgotPasswordForm Form { get; set; }
 
-    public ForgotPasswordModel(ILogger<ForgotPasswordModel> logger, IMailSender mailSender, IAppUserManager userManager, INotyfService notyfService) {
+    public ForgotPasswordModel(ILogger<ForgotPasswordModel> logger, IMailSender mailSender, IAppUserManager userManager,
+        INotyfService notyfService) {
         _logger = logger;
         _mailSender = mailSender;
         _userManager = userManager;
@@ -26,34 +27,27 @@ public class ForgotPasswordModel : PageModel {
     public async Task<IActionResult> OnPostAsync() {
         var form = Form;
 
-        if ( string.IsNullOrEmpty(form.Email) ) return Page();
-            
-        var user = await _userManager.GetUserByEmailAsync(form.Email);
-        if ( user == null ) {
+        if ( string.IsNullOrEmpty(form.Email) ) {
+            _notyfService.Error("Please provide an email");
             return Page();
         }
 
-        var token = HttpUtility.UrlEncode(await _userManager.GeneratePasswordResetTokenAsync(user));
-        var callback = Url.Page("ResetPassword", new {
-            email = form.Email
-        });
+        var user = await _userManager.GetUserByEmailAsync(form.Email);
+        // We don't want to just return the page, otherwise people know an email is signed up
+        if ( user != null ) {
+            var token = HttpUtility.UrlEncode(await _userManager.GeneratePasswordResetTokenAsync(user));
+            var callback = Url.Page("ResetPassword", new {
+                email = form.Email
+            });
 
-        await _mailSender.SendResetPasswordAsync(
-            form.Email,
-            user.UserName,
-            $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}?token={token}");
+            await _mailSender.SendResetPasswordAsync(
+                form.Email,
+                user.UserName,
+                $"{Request.Scheme}://{Request.Host}{Request.PathBase}{callback}?token={token}");
+        }
 
         _notyfService.Success("Please check your email to reset your password");
-        
-        return LocalRedirect("/");
-    }
 
-    public IActionResult OnGet(string email, string token) {
-        return Page();
-    }
-        
-    public class ForgotPasswordForm {
-        [Required]
-        public string Email { get; set; }
+        return LocalRedirect("/");
     }
 }

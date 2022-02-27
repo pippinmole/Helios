@@ -24,9 +24,8 @@ public static class DatadogExtensionMethods {
                 options.ToDatadogConfiguration(),
                 logLevel: options.OverrideLogLevel ?? LogEventLevel.Verbose
             );
-        }, writeToProviders: true);
+        });
 
         return builder;
     }
-    
 }

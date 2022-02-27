@@ -28,6 +28,14 @@
             };
     }
 
+    string RewardScaleStyle(double scale) {
+        return scale switch {
+            > 0.9f => "bg-success",
+            > 0.35f => "bg-warning",
+            _ => "bg-danger"
+            };
+    }
+
     var user = await _userManager.GetUserByIdAsync(User.GetUniqueId());
 }
 
@@ -54,10 +62,6 @@
 <h2 class="text-center">Devices</h2>
 
 <div style="width: 65%;" class="m-auto">
-    @* <h4 class="text-left">Add new device</h4> *@
-    @* <div class="dropdown-divider"></div> *@
-
-
     @{
         var deviceCount = user.Devices.Count;
         var maxDevices = user.AccountType.MaxDevicesAllowed();
@@ -66,11 +70,17 @@
     <h4 class="mt-5">
         Your devices
     
-        <span class="text-muted fs-6">
-            @deviceCount out of @maxDevices device slots used
-        
-            <a href="@Url.Page("/pricing")">Upgrade Now</a>
-        </span>
+        @if ( user.AccountType == EAccountType.Enterprise ) {
+            <span class="text-muted fs-6">
+                @deviceCount devices
+            </span>
+        } else {
+            <span class="text-muted fs-6">
+                @deviceCount out of @maxDevices device slots used
+
+                <a href="@Url.Page("/pricing")">Upgrade Now</a>
+            </span>
+        }
         
         <button class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
             +
@@ -111,46 +121,96 @@
                             <small class="text-muted">
                                 Updated @UppercaseFirst(device.TimeSinceLastReport().Humanize(minUnit: TimeUnit.Second)) ago
                             </small>
+                            
+                            <span class="badge rounded-pill bg-success" 
+                                  data-toggle="tooltip" data-placement="top" title="Antenna Gain"
+                            >@device.LastReport.GainDb dBi</span>
+                            <span class="badge rounded-pill bg-success" 
+                                  data-toggle="tooltip" data-placement="top" title="Antenna Elevation"
+                            >@(device.LastReport.elevation) Meters</span>
+                            <span class="badge rounded-pill bg-success" 
+                                  data-toggle="tooltip" data-placement="top" title="Current block synced on device"
+                            >Block @device.LastReport.block</span>
+                            <span class="badge rounded-pill @RewardScaleStyle(device.LastReport.reward_scale)"
+                                  @* data-bs-toggle="tooltip" data-bs-placement="top" title="Reward scale" *@
+                            >Reward Scale @device.LastReport.reward_scale.ToString("N2")</span>
+                            @* <span class="badge rounded-pill bg-success">Success</span> *@
                         </span>
                     </button>
                 </h2>
                 <div id="panelsStayOpen-collapse-@i" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-@i">
                     <div class="accordion-body">
-                        <ul class="list-group list-group-flush">
 
-                            @* Uptime *@
-                            <li class="list-group-item">
-                                <strong>Uptime: </strong> IMPLEMENT
-                            </li>
-
-                            @* Explorer page *@
-                            <li class="list-group-item">
-                                <strong>Explorer page: </strong>
-                            
-                                @if ( device.LastReport == null ) {
-                                    @:"Unknown"
-                                } else {
-                                    <a target="_blank" href="@AddressToExplorerUrl(device.LastReport.address)">
-                                        @device.LastReport.address
-                                    </a>
-                                }
-                            </li>
-
-                            @* IP Addresses known *@
-                            <li class="list-group-item">
-                                @if ( device.LastReport == null ) {
-                                    @:Unknown
-                                } else {
-                                    @foreach ( var ip in device.LastReport.status.GetListenAddresses() ) {
-                                        <strong>IP Address:</strong>
-                                        @ip
-                                        <br/>
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <th scope="row">Public IP Address</th>
+                                <td>
+                                    @if ( device.LastReport == null ) {
+                                        @:Unknown
+                                    } else {
+                                        var listenAddresses = device.LastReport.status.GetListenAddresses().ToList();
+                                        
+                                        if(listenAddresses.Count == 0) {
+                                            <span class="text-danger">Not found - Device is either relayed or new to the blockchain</span>
+                                        }
+                                        
+                                        @foreach ( var ip in listenAddresses ) {
+                                            @ip
+                                        }
                                     }
-                                }
-                            </li>
-                        </ul>
-                    
-                        <form method="post" asp-page-handler="DeleteDevice" asp-route-id="@device.Id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Explorer Page</th>
+                                <td>
+                                    @if ( device.LastReport == null ) {
+                                        @:"Unknown"
+                                    } else {
+                                        <a target="_blank" href="@AddressToExplorerUrl(device.LastReport.address)">
+                                            @device.LastReport.address
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Owner Address</th>
+                                <td colspan="2">
+                                    <a href="https://explorer.helium.com/accounts/@device.LastReport.owner" target="_blank">
+                                        @device.LastReport.owner
+                                    </a>
+                                </td>
+                            </tr>
+                            @* <tr> *@
+                            @*     <th scope="row">Port Status</th> *@
+                            @*     <td colspan="2"> *@
+                            @*         Port 22: @(device.PortReport == null ? "Unknown" : device.PortReport.SshPortOpen) *@
+                            @*         <br /> *@
+                            @*         Port 44158: @(device.PortReport == null ? "Unknown" : device.PortReport.PeerPortOpen) *@
+                            @*     </td> *@
+                            @* </tr> *@
+                            <tr>
+                                <th scope="row">Location Data</th>
+                                <td colspan="2">
+                                    @device.LastReport.geocode.long_street <br/>
+                                    @device.LastReport.geocode.long_city <br/>
+                                    @device.LastReport.geocode.long_state <br/>
+                                    @device.LastReport.geocode.long_country <br/>
+                                    
+                                    @{
+                                        const int zoom = 12;
+                                        const string type = "p";
+                                        var location = $"loc:{device.LastReport.lat}+{device.LastReport.lng}";
+                                    }
+                                    
+                                    <a href="http://maps.google.com/maps?z=@zoom&t=@type&q=@location" target="_blank">Google Maps</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <a href="#"><button type="submit" class="btn btn-primary disabled">Diagnostics (coming soon)</button></a>
+                        <form method="post" asp-page-handler="DeleteDevice" class="d-inline" asp-route-id="@device.Id">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
                     </div>

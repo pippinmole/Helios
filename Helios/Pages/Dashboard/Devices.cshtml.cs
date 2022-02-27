@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using AspNetCoreHero.ToastNotification.Abstractions;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Helios.Data.Users;
 using Helios.Data.Users.Extensions;
 using Helios.Helium;

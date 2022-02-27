@@ -1,7 +1,9 @@
 ﻿using Helios.Helium.Schemas;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Helios.Helium; 
 
+[BsonIgnoreExtraElements]
 public class HeliumMiner {
 
     public Guid Id { get; set; }
@@ -16,11 +18,9 @@ public class HeliumMiner {
         UpdateReport(report);
     }
 
-    public HeliumMiner UpdateReport(HotspotReport report) {
+    public void UpdateReport(HotspotReport report) {
         LastReport = report;
         LastReportDate = DateTime.Now;
-
-        return this;
     }
     
     public TimeSpan TimeSinceLastReport() => DateTime.Now - LastReportDate;
