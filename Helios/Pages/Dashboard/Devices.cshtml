@@ -149,14 +149,14 @@
                                     @if ( device.LastReport == null ) {
                                         @:Unknown
                                     } else {
-                                        var listenAddresses = device.LastReport.status.GetListenAddresses().ToList();
+                                        var listenAddresses = device.LastReport.status.GetListenAddresses()?.ToList();
                                         
-                                        if(listenAddresses.Count == 0) {
+                                        if(listenAddresses == null || listenAddresses.Count == 0) {
                                             <span class="text-danger">Not found - Device is either relayed or new to the blockchain</span>
-                                        }
-                                        
-                                        @foreach ( var ip in listenAddresses ) {
-                                            @ip
+                                        } else {
+                                            @foreach ( var ip in listenAddresses ) {
+                                                @ip
+                                            }
                                         }
                                     }
                                 </td>
@@ -218,4 +218,6 @@
             </div>
         }
     </div>
+    
+    <div class="text-muted mt-3">Please note: If your device information shows a reward scale of 0, or empty values for some entries, it may be because your device is new to the blockchain. If this is not the case, please use the diagnostic tool.</div>
 </div>

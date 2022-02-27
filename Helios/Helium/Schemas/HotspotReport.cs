@@ -9,7 +9,7 @@ public class Status {
     public bool IsOnline => online.ToLower() == "online";
     
     public IEnumerable<string> GetListenAddresses() {
-        return listen_addrs
+        return listen_addrs?
             .Where(x => !x.Contains("/p2p/"))
             .Select(ip => ip.Remove(0, 5))
             .Select(address => address.Remove(address.IndexOf("/tcp/", StringComparison.Ordinal)));
