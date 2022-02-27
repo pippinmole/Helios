@@ -1,6 +1,10 @@
 @page "/verify/{email}"
 @model SignupVerification
 
+@{
+    ViewData["Title"] = "Verify Email";
+}
+
 @foreach ( var error in ViewData.ModelState.Values.SelectMany(modelState => modelState.Errors) ) {
     <p>@(error.Exception + ": " + error.ErrorMessage)</p>
 }
