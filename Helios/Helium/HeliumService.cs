@@ -30,7 +30,7 @@ public class HeliumService : IHeliumService {
         name = name.Replace(" ", "-").ToLower();
 
         var url = $"https://api.helium.io/v1/hotspots/name/{name}";
-        var result = await Get<HotspotResult>(url);
+        var result = await GetAsync<HotspotResult>(url);
 
         return result?.data == null || result.data.Count == 0
             ? null
@@ -43,25 +43,27 @@ public class HeliumService : IHeliumService {
             return (null, null);
         
         var url = $"https://api.helium.io/v1/transactions/{hash}";
-        var result = await Get<BlockRoot>(url, cancellationToken);
+        var result = await GetAsync<BlockRoot>(url, cancellationToken);
 
         return result?.data?.payments == null || result.data.payments.Count == 0
             ? (null, null)
             : (result.data, result.data.payments[0]);
     }
 
-    private async Task<T> Get<T>(string url, CancellationToken cancellationToken = default) where T : class {
+    private async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken = default) where T : class {
         try {
             var json = await _client.GetStringAsync(url, cancellationToken);
             var obj = JsonConvert.DeserializeObject<T>(json, _serializerSettings);
 
+            // Reset the count if we've had a successful request
             _serviceDownCount = 0;
-            
+
             return obj;
         }
         catch ( HttpRequestException ex ) {
-            _logger.LogError("Error {ErrorCode}: {ErrorMessage} when trying to access resource: {Url}", ex.StatusCode, ex.Message, url);
-            
+            _logger.LogError(ex, "Error {ErrorCode}: {ErrorMessage} when trying to access resource: {Url}",
+                ex.StatusCode, ex.Message, url);
+
             _serviceDownCount++;
         }
 
