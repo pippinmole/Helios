@@ -22,24 +22,24 @@ public class UptimeCronJob : CronJobService {
         _heliumOptions = heliumOptions;
     }
 
-    public override async Task DoWork(CancellationToken cancellationToken) {
+    public override async Task DoWorkAsync(CancellationToken cancellationToken) {
         var scope = _serviceProvider.CreateScope();
         var userService = scope.ServiceProvider.GetRequiredService<IAppUserManager>();
         var mailService = scope.ServiceProvider.GetRequiredService<IMailSender>();
         
         var users = userService.GetUsersWhere(x => true);
         foreach ( var user in users ) {
+            if ( !user.CanUpdateDevices() ) continue;
+            
             await UpdateDeviceData(user, mailService, cancellationToken);
-
             await userService.UpdateUserAsync(user);
         }
+        
+        _logger.LogInformation("Successfully completed {Name} job", nameof(UptimeCronJob));
     }
 
     private async Task UpdateDeviceData(ApplicationUser user, IMailSender mailSender,
         CancellationToken cancellationToken) {
-        
-        if ( !user.CanUpdateDevices() )
-            return;
 
         user.Devices ??= new List<HeliumMiner>();
         user.LastDeviceUpdate = DateTime.Now;

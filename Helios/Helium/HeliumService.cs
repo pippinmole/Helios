@@ -6,12 +6,16 @@ namespace Helios.Helium;
 
 public class HeliumService : IHeliumService {
 
+    public bool IsServiceDown => _serviceDownCount > 5;
+    
     private readonly ILogger<HeliumService> _logger;
     private readonly HttpClient _client;
 
     private readonly JsonSerializerSettings _serializerSettings = new() {
         Error = (_, ev) => ev.ErrorContext.Handled = true
     };
+    
+    private int _serviceDownCount;
 
     public HeliumService(ILogger<HeliumService> logger) {
         _logger = logger;
@@ -51,10 +55,14 @@ public class HeliumService : IHeliumService {
             var json = await _client.GetStringAsync(url, cancellationToken);
             var obj = JsonConvert.DeserializeObject<T>(json, _serializerSettings);
 
+            _serviceDownCount = 0;
+            
             return obj;
         }
         catch ( HttpRequestException ex ) {
             _logger.LogError("Error {ErrorCode}: {ErrorMessage} when trying to access resource: {Url}", ex.StatusCode, ex.Message, url);
+            
+            _serviceDownCount++;
         }
 
         return null;

@@ -122,19 +122,18 @@
                                 Updated @UppercaseFirst(device.TimeSinceLastReport().Humanize(minUnit: TimeUnit.Second)) ago
                             </small>
                             
-                            <span class="badge rounded-pill bg-success" 
-                                  data-toggle="tooltip" data-placement="top" title="Antenna Gain"
-                            >@device.LastReport.GainDb dBi</span>
-                            <span class="badge rounded-pill bg-success" 
-                                  data-toggle="tooltip" data-placement="top" title="Antenna Elevation"
-                            >@(device.LastReport.elevation) Meters</span>
-                            <span class="badge rounded-pill bg-success" 
-                                  data-toggle="tooltip" data-placement="top" title="Current block synced on device"
-                            >Block @device.LastReport.block</span>
-                            <span class="badge rounded-pill @RewardScaleStyle(device.LastReport.reward_scale)"
-                                  @* data-bs-toggle="tooltip" data-bs-placement="top" title="Reward scale" *@
-                            >Reward Scale @device.LastReport.reward_scale.ToString("N2")</span>
-                            @* <span class="badge rounded-pill bg-success">Success</span> *@
+                            @if ( device.LastReport != null ) {
+                                <span class="badge rounded-pill bg-success"
+                                      data-toggle="tooltip" data-placement="top" title="Antenna Gain">@device.LastReport.GainDb dBi</span>
+
+                                <span class="badge rounded-pill bg-success"
+                                      data-toggle="tooltip" data-placement="top" title="Antenna Elevation">@(device.LastReport.elevation) Meters</span>
+
+                                <span class="badge rounded-pill bg-success"
+                                      data-toggle="tooltip" data-placement="top" title="Current block synced on device">Block @device.LastReport.block</span>
+
+                                <span class="badge rounded-pill @RewardScaleStyle(device.LastReport.reward_scale)">Reward Scale @device.LastReport.reward_scale.ToString("N2")</span>
+                            }
                         </span>
                     </button>
                 </h2>
@@ -165,7 +164,7 @@
                                 <th scope="row">Explorer Page</th>
                                 <td>
                                     @if ( device.LastReport == null ) {
-                                        @:"Unknown"
+                                        @:Unknown
                                     } else {
                                         <a target="_blank" href="@AddressToExplorerUrl(device.LastReport.address)">
                                             @device.LastReport.address
@@ -176,9 +175,13 @@
                             <tr>
                                 <th scope="row">Owner Address</th>
                                 <td colspan="2">
-                                    <a href="https://explorer.helium.com/accounts/@device.LastReport.owner" target="_blank">
-                                        @device.LastReport.owner
-                                    </a>
+                                    @if ( device.LastReport == null ) {
+                                        @:Unknown
+                                    } else {
+                                        <a href="https://explorer.helium.com/accounts/@device.LastReport.owner" target="_blank">
+                                            @device.LastReport.owner
+                                        </a>
+                                    }
                                 </td>
                             </tr>
                             @* <tr> *@
@@ -192,18 +195,20 @@
                             <tr>
                                 <th scope="row">Location Data</th>
                                 <td colspan="2">
-                                    @device.LastReport.geocode.long_street <br/>
-                                    @device.LastReport.geocode.long_city <br/>
-                                    @device.LastReport.geocode.long_state <br/>
-                                    @device.LastReport.geocode.long_country <br/>
-                                    
-                                    @{
+                                    @if ( device.LastReport == null ) {
+                                        @:Unknown
+                                    } else {
+                                        @device.LastReport.geocode.long_street <br/>
+                                        @device.LastReport.geocode.long_city <br/>
+                                        @device.LastReport.geocode.long_state <br/>
+                                        @device.LastReport.geocode.long_country <br/>
+
                                         const int zoom = 12;
                                         const string type = "p";
                                         var location = $"loc:{device.LastReport.lat}+{device.LastReport.lng}";
+                                        
+                                        <a href="http://maps.google.com/maps?z=@zoom&t=@type&q=@location" target="_blank">Google Maps</a>
                                     }
-                                    
-                                    <a href="http://maps.google.com/maps?z=@zoom&t=@type&q=@location" target="_blank">Google Maps</a>
                                 </td>
                             </tr>
                             </tbody>
