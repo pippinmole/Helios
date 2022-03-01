@@ -1,5 +1,7 @@
 ﻿@inject IAppUserManager _userManager
+@inject IHeliumService _heliumService
 @using Helios.Data.Users
+@using Helios.Helium
 @{
     Layout = null;
 }
@@ -120,11 +122,18 @@
         </nav>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-3">
+            
+            @if ( _heliumService.IsServiceDown ) {
+                <div class="alert alert-danger" role="alert">
+                    <strong>It looks like that the Helium API is down</strong>, meaning that device data may not update properly. We are sorry for the inconvenience caused by this.
+                </div>
+            }
+            
             <div class="alert alert-warning" role="alert">
-                <strong>Please note:</strong> This application is in beta, and so may not function properly or contain the full-release feature set. 
+                <strong>Please note:</strong> This application is in beta, and so may not function properly or contain the full-release feature set.
                 If you have any issues with the site or want to suggest a feature, please <a href="https://discord.gg/jRvZk5cmpD">contact us on our discord server</a>.
             </div>
-            
+
             @RenderBody()
         </main>
     </div>

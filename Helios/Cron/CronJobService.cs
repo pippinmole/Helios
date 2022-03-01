@@ -13,16 +13,16 @@ public abstract class CronJobService : IHostedService, IDisposable {
     }
 
     public virtual async Task StartAsync(CancellationToken cancellationToken) {
-        await ScheduleJob(cancellationToken).ConfigureAwait(false);
+        await ScheduleJobAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    protected virtual async Task ScheduleJob(CancellationToken cancellationToken) {
+    protected virtual async Task ScheduleJobAsync(CancellationToken cancellationToken) {
         var next = _expression.GetNextOccurrence(DateTimeOffset.Now, _timeZoneInfo);
         if ( next.HasValue ) {
             var delay = next.Value - DateTimeOffset.Now;
             // prevent non-positive values from being passed into Timer
             if ( delay.TotalMilliseconds <= 0 ) {
-                await ScheduleJob(cancellationToken).ConfigureAwait(false);
+                await ScheduleJobAsync(cancellationToken).ConfigureAwait(false);
             }
 
             _timer = new System.Timers.Timer(delay.TotalMilliseconds);
@@ -31,11 +31,11 @@ public abstract class CronJobService : IHostedService, IDisposable {
                 _timer = null;
 
                 if ( !cancellationToken.IsCancellationRequested ) {
-                    await DoWork(cancellationToken).ConfigureAwait(false);
+                    await DoWorkAsync(cancellationToken).ConfigureAwait(false);
                 }
 
                 if ( !cancellationToken.IsCancellationRequested ) {
-                    await ScheduleJob(cancellationToken).ConfigureAwait(false); // reschedule next
+                    await ScheduleJobAsync(cancellationToken).ConfigureAwait(false); // reschedule next
                 }
             };
             _timer.Start();
@@ -44,7 +44,7 @@ public abstract class CronJobService : IHostedService, IDisposable {
         await Task.CompletedTask;
     }
 
-    public virtual async Task DoWork(CancellationToken cancellationToken) {
+    public virtual async Task DoWorkAsync(CancellationToken cancellationToken) {
         await Task.Delay(5000, cancellationToken); // do the work
     }
 
