@@ -1,4 +1,5 @@
-﻿using Helios.Data.Users;
+﻿using Helios.Better_Uptime;
+using Helios.Data.Users;
 using Helios.Data.Users.Extensions;
 using Helios.Helium;
 using Helios.MailService;
@@ -11,15 +12,18 @@ public class UptimeCronJob : CronJobService {
     private readonly IHeliumService _heliumService;
     private readonly IServiceProvider _serviceProvider;
     private readonly IOptions<HeliumOptions> _heliumOptions;
+    private readonly IUptimeHeartbeatService _uptimeHeartbeatService;
 
     public UptimeCronJob(IScheduleConfig<UptimeCronJob> config, ILogger<UptimeCronJob> logger,
-        IHeliumService heliumService, IServiceProvider serviceProvider, IOptions<HeliumOptions> heliumOptions)
+        IHeliumService heliumService, IServiceProvider serviceProvider, IOptions<HeliumOptions> heliumOptions,
+        IUptimeHeartbeatService uptimeHeartbeatService)
         : base(config.CronExpression, config.TimeZoneInfo) {
 
         _logger = logger;
         _heliumService = heliumService;
         _serviceProvider = serviceProvider;
         _heliumOptions = heliumOptions;
+        _uptimeHeartbeatService = uptimeHeartbeatService;
     }
 
     public override async Task DoWorkAsync(CancellationToken cancellationToken) {
@@ -34,7 +38,8 @@ public class UptimeCronJob : CronJobService {
             await UpdateDeviceData(user, mailService, cancellationToken);
             await userService.UpdateUserAsync(user);
         }
-        
+
+        await _uptimeHeartbeatService.DeviceCheckHeartbeatAsync();
         _logger.LogInformation("Successfully completed {Name} job", nameof(UptimeCronJob));
     }
 

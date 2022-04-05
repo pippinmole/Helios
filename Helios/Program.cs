@@ -1,6 +1,8 @@
 using AspNetCore.Identity.Mongo;
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
+using Helios.Better_Uptime;
+using Helios.Better_Uptime.Options;
 using Helios.Core;
 using Helios.Data.Users;
 using Helios.Database;
@@ -30,12 +32,14 @@ builder.Services.Configure<HeliumOptions>(builder.Configuration.GetSection(Heliu
 builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
 builder.Services.Configure<PaypalOptions>(builder.Configuration.GetSection(PaypalOptions.Name));
 builder.Services.Configure<MailSenderOptions>(builder.Configuration.GetSection(MailSenderOptions.Name));
+builder.Services.Configure<UptimeHeartbeatOptions>(builder.Configuration.GetSection(UptimeHeartbeatOptions.Name));
 
 builder.Services.AddRecaptcha(builder.Configuration.GetSection("RecaptchaSettings"));
 builder.Services.AddSingleton<IDatabaseContext, DatabaseContext>();
 builder.Services.AddSingleton<IPaypalDatabase, PaypalDatabase>();
 builder.Services.AddSingleton<IHeliumService, HeliumService>();
 builder.Services.AddSingleton<IOrderValidator, OrderValidator>();
+builder.Services.AddSingleton<IUptimeHeartbeatService, UptimeHeartbeatService>();
 builder.Services.AddScoped<IAppUserManager, AppUserManager>();
 builder.Services.AddScoped<IMailSender, MailSender>();
 
