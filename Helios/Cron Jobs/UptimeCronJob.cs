@@ -30,11 +30,11 @@ public class UptimeCronJob : CronJobService {
         var scope = _serviceProvider.CreateScope();
         var userService = scope.ServiceProvider.GetRequiredService<IAppUserManager>();
         var mailService = scope.ServiceProvider.GetRequiredService<IMailSender>();
-        
+
         var users = userService.GetUsersWhere(x => true);
         foreach ( var user in users ) {
             if ( !user.CanUpdateDevices() ) continue;
-            
+
             await UpdateDeviceData(user, mailService, cancellationToken);
             await userService.UpdateUserAsync(user);
         }

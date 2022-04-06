@@ -14,7 +14,6 @@ public class UptimeHeartbeatService : IUptimeHeartbeatService {
     }
     
     public async Task DeviceCheckHeartbeatAsync() {
-        
         var url = _options?.Value.EmailHeartbeatUrl;
         if ( string.IsNullOrEmpty(url) ) return;
 
