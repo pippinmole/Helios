@@ -56,7 +56,7 @@ public class MailSender : IMailSender {
         if ( response.IsSuccessStatusCode ) {
             _logger.LogInformation("Successfully sent password reset email");
         } else {
-            _logger.LogCritical("Failed to send password reset email: Error code {ErrorCode}", response.StatusCode);
+            _logger.LogCritical("Failed to send password reset email: Error code {Code}. Error Message {Message}", response.StatusCode, response.ToString());
         }
     }
 

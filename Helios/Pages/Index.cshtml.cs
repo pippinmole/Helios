@@ -21,9 +21,8 @@ public class IndexModel : PageModel {
     public async Task<IActionResult> OnGetAsync() {
         if ( !User.IsLoggedIn() ) return Page();
 
-        // await _mailSender.SendResetPasswordAsync("icondesk1@gmail.com", "pippin_mole111", "https://www.111google.co.uk/",
-        //     CancellationToken.None);
-        await _mailSender.SendPurchaseConfirmedAsync("icondesk1@gmail.com", Product.ProTier, CancellationToken.None);
+        // await _mailSender.SendResetPasswordAsync("icondesk1@gmail.com", "pippin_mole111", "https://www.google.co.uk/");
+        // await _mailSender.SendPurchaseConfirmedAsync("icondesk1@gmail.com", Product.ProTier, CancellationToken.None);
         // await _mailSender.SendServiceDownAsync("icondesk1@gmail.com", CancellationToken.None);
         // await _mailSender.SendVerifyEmailAsync("icondesk1@gmail.com", "pippin_mole", "google.com",
         //     CancellationToken.None);

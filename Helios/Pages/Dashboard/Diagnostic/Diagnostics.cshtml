@@ -1,0 +1,14 @@
+﻿@page "/dashboard/diagnostic/{id}"
+@using Helios.Data.Users
+@model Helios.Pages.Dashboard.Diagnostic.DiagnosticsModel
+@inject IAppUserManager _userManager
+@{
+    ViewData["Title"] = "Device Diagnostics";
+    Layout = "Shared/_DashboardLayout";
+}
+
+<h2 class="text-center">@Model.Device.AnimalName</h2>
+
+<div style="width: 65%;" class="m-auto">
+    
+</div>

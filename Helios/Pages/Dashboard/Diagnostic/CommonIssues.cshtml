@@ -1,0 +1,30 @@
+﻿@page "/commonissues"
+@model Helios.Pages.Dashboard.Diagnostic.CommonIssuesModel
+
+@{
+    ViewData["Title"] = "Common Issues";
+    Layout = "Shared/_Layout";
+}
+
+<div style="width: 65%;" class="m-auto">
+    <h2 class="text-center">Common Issues</h2>
+    
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Port 22 and/or 44158 not open
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-muted mt-3">
+        If you have an issue that is not on our list, please <a href="https://discord.gg/jRvZk5cmpD">join our discord</a> and let us know!
+    </div>
+</div>
