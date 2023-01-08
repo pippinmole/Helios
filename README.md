@@ -184,7 +184,7 @@ Project Link: [https://github.com/pippinmole/Helios](https://github.com/pippinmo
 [issues-shield]: https://img.shields.io/github/issues/pippinmole/Helios.svg?style=for-the-badge
 [issues-url]: https://github.com/pippinmole/Helios/issues
 [license-shield]: https://img.shields.io/github/license/pippinmole/Helios.svg?style=for-the-badge
-[license-url]: https://github.com/pippinmole/Helios/blob/master/LICENSE.txt
+[license-url]: https://github.com/pippinmole/Helios/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/jonathan-ruffles-b44b30196/
 [product-screenshot]: images/screenshot.png
