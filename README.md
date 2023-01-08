@@ -8,19 +8,15 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/pippinmole/Helios">
     <img src="images/helium-miners.png" alt="Logo" width="40%" >
   </a>
 
@@ -29,47 +25,34 @@
   <p align="center">
     Monitor your Helium miners' uptime and get notified when they go down!
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/pippinmole/Helios"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://heliosmonitor.com/">View Demo</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/pippinmole/Helios/issues">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    <a href="https://github.com/pippinmole/Helios/issues">Request Feature</a>
   </p>
 </div>
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+<p align="center">
+<img src="images/site-screenshot.png" align="center" alt="Logo" width="2862" >
+</p>
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
-
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
-
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
-
-Use the `BLANK_README.md` to get started.
+This website tracks uptime and diagnoses network issues for [Helium devices](https://www.helium.com/). The backend is written in ASP.NET Core Razor pages (Server-Side Rendering).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
+* [Razor Pages](https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-7.0&tabs=visual-studio)
+* [Serilog](https://serilog.net/)
+* [reCAPTCHA](https://www.google.com/recaptcha/about/)
+* [MongoDB](https://www.mongodb.com/)
 * [Bootstrap](https://getbootstrap.com)
 * [JQuery](https://jquery.com)
 
@@ -80,33 +63,39 @@ This section should list any major frameworks/libraries used to bootstrap your p
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
 
 ### Installation
 
 _Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repository
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   https://github.com/pippinmole/Helios.git
    ```
-3. Install NPM packages
+2. Restore packages
    ```sh
-   npm install
+   dotnet restore
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+   3. Set up user secrets
+   ```sh
+    dotnet user-secrets init
+    dotnet user-secrets set "ConnectionStrings:DatabaseConnectionString" "<Get this from your dashboard>"
+    dotnet user-secrets set "HeliumOptions:TransactionAddress" "<Helium Address>"
+    dotnet user-secrets set "MailSenderOptions:ApiKey" "<Get this from your MailGun dashboard>"
+    dotnet user-secrets set "MailSenderOptions:Domain" "<The domain emails will come from>"
+    dotnet user-secrets set "MailSenderOptions:FromName" "<The name emails will come from>"
+    dotnet user-secrets set "RecaptchaSettings:SecretKey" "<Get this from your google dashboard>"
+    dotnet user-secrets set "RecaptchaSettings:SiteKey" "<Get this from your google dashboard>"
+    dotnet user-secrets set "Serilog:Datadog:ApiKey" "<Get this from Datadog dashboard>"
+    ```
+4. Build the solution
+   ```sh
+   dotnet build
+   ```
+5. Finally, run
+   ```sh
+   dotnet run
    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -115,9 +104,11 @@ _Below is an example of how you can instruct your audience on installing and set
 
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+Once you have executed ``dotnet run`` , a website at https://localhost:7086/ will be available. This site allows you to:
+1. Create an account and sign in
+2. Add Helium miners to your 'watch list'
+3. Upgrade your account type by paying ``HNT`` to a specified address
+4. Run diagnostics on your Helium device (Port checking, etc.)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -152,27 +143,37 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Your Name - jonathan.ruffles03@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/pippinmole/Helios](https://github.com/pippinmole/Helios)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
+[//]: # (<!-- ACKNOWLEDGMENTS -->)
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
+[//]: # (## Acknowledgments)
 
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+[//]: # ()
+[//]: # (Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!)
+
+[//]: # ()
+[//]: # (* [Choose an Open Source License]&#40;https://choosealicense.com&#41;)
+
+[//]: # (* [GitHub Emoji Cheat Sheet]&#40;https://www.webpagefx.com/tools/emoji-cheat-sheet&#41;)
+
+[//]: # (* [Malven's Flexbox Cheatsheet]&#40;https://flexbox.malven.co/&#41;)
+
+[//]: # (* [Malven's Grid Cheatsheet]&#40;https://grid.malven.co/&#41;)
+
+[//]: # (* [Img Shields]&#40;https://shields.io&#41;)
+
+[//]: # (* [GitHub Pages]&#40;https://pages.github.com&#41;)
+
+[//]: # (* [Font Awesome]&#40;https://fontawesome.com&#41;)
+
+[//]: # (* [React Icons]&#40;https://react-icons.github.io/react-icons/search&#41;)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -180,16 +181,12 @@ Use this space to list resources you find helpful and would like to give credit 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
+[stars-shield]: https://img.shields.io/github/stars/pippinmole/Helios.svg?style=for-the-badge
+[stars-url]: https://github.com/pippinmole/Helios/stargazers
+[issues-shield]: https://img.shields.io/github/issues/pippinmole/Helios.svg?style=for-the-badge
+[issues-url]: https://github.com/pippinmole/Helios/issues
+[license-shield]: https://img.shields.io/github/license/pippinmole/Helios.svg?style=for-the-badge
+[license-url]: https://github.com/pippinmole/Helios/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
+[linkedin-url]: https://www.linkedin.com/in/jonathan-ruffles-b44b30196/
 [product-screenshot]: images/screenshot.png
